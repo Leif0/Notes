@@ -17,29 +17,6 @@ namespace Notes
         static Random rnd = new Random();
         private string c_Adresse;
 
-        public void ajouterAppreciation(cls_Appreciation pAppreciation)
-        {
-            c_Appreciations.Add(pAppreciation);
-        }
-
-        public cls_Appreciation getAppreciation(cls_Matiere pMatiere)
-        {
-            cls_Appreciation result = c_Appreciations.Find(
-                delegate(cls_Appreciation ap)
-                {
-                    return ap.getMatiere() == pMatiere;
-                }
-                );
-            if (result != null)
-            {
-                return result;
-            }
-            else
-            {
-                throw new Exception("Aucune appréciation");
-            }
-        }
-
         /// <summary>
         /// Créer un nouvel élève
         /// </summary>
@@ -210,15 +187,17 @@ namespace Notes
         public double MoyenneMatiere(cls_Matiere pMatiere)
         {
             double cumul = 0;
+            int totalNotes = 0;
 
             for (int i = 0; i < c_Notes.Count; i++)
             {
                 if (c_Notes[i].getDevoir().getMatiere() == pMatiere)
                 {
                     cumul += c_Notes[i].getValeur();
+                    totalNotes++;
                 }
             }
-            return cumul;
+            return cumul / totalNotes;
         }
 
         /// <summary>
@@ -237,6 +216,38 @@ namespace Notes
         public string getAdresse()
         {
             return c_Adresse;
+        }
+
+        /// <summary>
+        /// Ajoute une appréciation dans une matière pour l'élève
+        /// </summary>
+        /// <param name="pAppreciation">Appréciation à ajouter</param>
+        public void ajouterAppreciation(cls_Appreciation pAppreciation)
+        {
+            c_Appreciations.Add(pAppreciation);
+        }
+
+        /// <summary>
+        /// Retourne l'appréciation de la matière
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <returns>Appréciation de la matière pour l'élève</returns>
+        public cls_Appreciation getAppreciation(cls_Matiere pMatiere)
+        {
+            cls_Appreciation result = c_Appreciations.Find(
+                delegate (cls_Appreciation ap)
+                {
+                    return ap.getMatiere() == pMatiere;
+                }
+                );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception("Aucune appréciation");
+            }
         }
     }
 }

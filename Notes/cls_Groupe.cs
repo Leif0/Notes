@@ -99,5 +99,37 @@ namespace Notes
             }
             return cumul / c_ListeEleve.Count;
         }
+
+        public double getMoyenneMinimumPourMatiere(cls_Matiere pMatiere)
+        {
+            double l_MoyenneMinimum = 20;
+
+            foreach (cls_Eleve l_Eleve in c_ListeEleve)
+            {
+                double l_MoyenneEleve = l_Eleve.MoyenneMatiere(pMatiere);
+
+                if (l_MoyenneEleve < l_MoyenneMinimum)
+                {
+                    l_MoyenneMinimum = l_MoyenneEleve;
+                }
+            }
+            return l_MoyenneMinimum;
+        }
+
+        public double getMoyenneMaximumPourMatiere(cls_Matiere pMatiere)
+        {
+            double l_MoyenneMaximum = 0;
+
+            foreach (cls_Eleve l_Eleve in c_ListeEleve)
+            {
+                double l_MoyenneEleve = l_Eleve.MoyenneMatiere(pMatiere);
+
+                if (l_MoyenneEleve > l_MoyenneMaximum)
+                {
+                    l_MoyenneMaximum = l_MoyenneEleve;
+                }
+            }
+            return l_MoyenneMaximum;
+        }
     }
 }

@@ -16,20 +16,27 @@ namespace Notes
             // Création du groupe
             cls_Groupe SLAM = new cls_Groupe("SLAM");
 
+            // Création des semestres
+            cls_Semestre l_Semestre1 = new cls_Semestre(1, new DateTime(2015, 8, 1), new DateTime(2016, 1, 1));
+            cls_Semestre l_Semestre2 = new cls_Semestre(2, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
+
             // Création des matières
             cls_Matiere l_MatiereDev          = new cls_Matiere("C#", SLAM, 6, Faker.NameFaker.Name());
             cls_Matiere l_MatiereMathematique = new cls_Matiere("Mathématiques", SLAM, 2, Faker.NameFaker.Name());
             cls_Matiere l_MatiereHTML         = new cls_Matiere("HTML", SLAM, 3, Faker.NameFaker.Name());
 
             // Création des devoirs
-            cls_Devoir Devoir1 = new cls_Devoir("DM de mathématique", new DateTime(2016, 02, 16), l_MatiereMathematique);
-            cls_Devoir Devoir2 = new cls_Devoir("DS C# et SQL", new DateTime(2016, 02, 02), l_MatiereDev);
+            cls_Devoir Devoir1 = new cls_Devoir("DM de mathématique", new DateTime(2016, 05, 16), l_MatiereMathematique);
+            cls_Devoir Devoir2 = new cls_Devoir("DS C# et SQL", new DateTime(2016, 03, 14), l_MatiereDev);
             cls_Devoir Devoir3 = new cls_Devoir("DS 1 HTML et Java", new DateTime(2016, 01, 24), l_MatiereHTML);
+            cls_Devoir Devoir4 = new cls_Devoir("DM de mathématique numéro 2", new DateTime(2015, 08, 24), l_MatiereMathematique);
+            cls_Devoir Devoir5 = new cls_Devoir("DS Javascript", new DateTime(2016, 01, 18), l_MatiereDev);
+            cls_Devoir Devoir6 = new cls_Devoir("DS JavaEE", new DateTime(2016, 05, 24), l_MatiereHTML);
 
             // Hasard
             Random rnd = new Random();
 
-            // Création de 18 élèves
+            // Création de 3 élèves
             cls_Eleve MonEleve;
             List<cls_Eleve> l_Eleves = new List<cls_Eleve>();
 
@@ -48,14 +55,13 @@ namespace Notes
                 l_Eleves.Add(MonEleve);
 
                 // Ajout des notes aléatoires
-                double noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
-                cls_Note Note1 = new cls_Note(noteAleatoire, MonEleve, Devoir1);
+                cls_Devoir[] l_Devoirs = {Devoir1, Devoir2, Devoir3, Devoir4, Devoir5, Devoir6};
 
-                noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
-                cls_Note Note2 = new cls_Note(noteAleatoire, MonEleve, Devoir2);
-
-                noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
-                cls_Note Note3 = new cls_Note(noteAleatoire, MonEleve, Devoir3);
+                foreach (cls_Devoir l_Devoir in l_Devoirs)
+                {
+                    double noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
+                    cls_Note Note = new cls_Note(noteAleatoire, MonEleve, l_Devoir, l_Semestre1);
+                }
 
                 // Appréciations aléatoires
                 cls_Appreciation appreciation1 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereDev);
@@ -88,7 +94,7 @@ namespace Notes
             }
 
             // Génère et ouvre un PDF
-            cls_Pdf pdf = new cls_Pdf(SLAM);
+            cls_Pdf pdf = new cls_Pdf(SLAM, l_Semestre1);
 
             Console.ReadLine();
         }

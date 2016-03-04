@@ -23,6 +23,7 @@ namespace Notes
 
         private cls_Groupe  c_Groupe;
         private cls_Eleve   c_Eleve;
+        private cls_Semestre c_Semestre;
 
         // Objet pour dessiner
         private XGraphics c_Gfx;
@@ -40,6 +41,7 @@ namespace Notes
         // Brushs
         private XBrush  c_Brush;
         private XPen    c_Pen;
+        private XPen    c_PenThin;
         private XPen    c_HeaderPen;
 
         // Positions
@@ -52,6 +54,11 @@ namespace Notes
         private XRect  c_PositionRectangleAdresse;
         private XRect  c_PositionTexteAdresse;
 
+        private XPoint c_ColonneMatiere;
+        private XPoint c_ColonneMoyenneEleve;
+        private XPoint c_ColonneMoyenneGroupe;
+        private XPoint c_ColonneAppreciation;
+
         // Variables pour le dessin du tableau
         private int     c_NumMatiere;
         private int     c_DebutTableau;
@@ -62,54 +69,77 @@ namespace Notes
         private string c_NomEtablissement;
 
         /// <summary>
-        /// Constructeur d'un fichier PDF. Le PDF est crée au moment de l'initialisation.
+        /// Créer tous les bulletins PDF de tous les élèves du groupe pour le semestre choisi. 
+        /// Le PDF est crée au moment de l'initialisation.
         /// </summary>
         /// <param name="pGroupe">Groupe</param>
-        public cls_Pdf(cls_Groupe pGroupe)
+        public cls_Pdf(cls_Groupe pGroupe, cls_Semestre pSemestre)
+        {
+            // Génère les pdfs pour tous les élèves de ce groupe
+            c_Groupe = pGroupe;
+            c_Semestre = pSemestre;
+
+            // Pour chaque élève, on modifie les variables, on dessine le PDF, puis on le sauvegarde
+            foreach (cls_Eleve l_eleve in c_Groupe.getListeEleve())
+            {
+                c_Eleve = l_eleve;
+                CreerPdf();
+            }
+        }
+
+        /// <summary>
+        /// Créer un bulletin PDF pour un seul élève
+        /// Le PDF est crée au moment de l'initialisation.
+        /// </summary>
+        /// <param name="pEleve">L'élève pour lequel on doit générer le bulletin</param>
+        /// <param name="pSemestre">Le semestre</param>
+        public cls_Pdf(cls_Eleve pEleve, cls_Semestre pSemestre)
+        {
+            // Génère les pdfs pour tous les élèves de ce groupe
+            c_Semestre = pSemestre;
+
+            // Met l'élève dans la classe car il est utilisé plus tard
+            c_Eleve = pEleve;
+        }
+
+        public void CreerPdf()
         {
             // Recupère le dossier courant pour les images
             c_DossierProjet = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
 
-            // Génère les pdfs pour tous les élèves de ce groupe
-            c_Groupe = pGroupe;
+            // Créer un nouveau document pdf vide
+            CreerDocument();
 
-            // Pour chaque élève, on modifie les variables, on dessine le PDF, puis on le sauvegarde
-            foreach (cls_Eleve eleve in c_Groupe.getListeEleve())
-            {
-                // Met l'élève dans la classe car il est utilisé plus tard
-                c_Eleve = eleve;
+            // Initialiser les brushs, les pens et les fonts
+            InitialiserOutils();
 
-                // Créer un nouveau document pdf vide
-                CreerDocument();
+            // Initialisation des variables de position et de taille
+            InitialiserVariables();
 
-                // Initialiser les brushs, les pens et les fonts
-                InitialiserOutils();
+            // Ajoute le haut du document : nom de l'établissement, titre année scolaire
+            DessinerHautDocument();
 
-                // Initialisation des variables de position et de taille
-                InitialiserVariables();
+            // Ajoute l'adresse dans un cadre en haut
+            DessinerAdresse();
 
-                // Ajoute le haut du document : nom de l'établissement, titre année scolaire
-                DessinerHautDocument();
+            // Dessine le tableau
+            DessinerTableau();
 
-                // Ajoute l'adresse dans un cadre en haut
-                DessinerAdresse();
+            // Dessine les lignes à l'intérieur du tableau, contenant les noms des matières,
+            // les professeurs, et les notes
+            DessinerLignesTableau();
 
-                // Dessine le tableau
-                DessinerTableau();
+            // Dessine les traits verticaux des colonnes
+            DessinerColonnes();
 
-                // Dessine les lignes à l'intérieur du tableau, contenant les noms des matières,
-                // les professeurs, et les notes
-                DessinerLignesTableau();
+            // Ajoute la moyenne générale pour l'élève en bas du tableau
+            DessinerMoyenneGenerale();
 
-                // Ajoute la moyenne générale pour l'élève en bas du tableau
-                DessinerMoyenneGenerale();
+            // Ajoute le cachet de l'établissement et la date
+            DessinerCachetEtDate();
 
-                // Ajoute le cachet de l'établissement et la date
-                DessinerCachetEtDate();
-
-                // Sauvegarde le pdf au format NomPrenom.pdf et l'ouvre directement
-                SauvegarderEtOuvrirPdf();
-            }
+            // Sauvegarde le pdf au format NomPrenom.pdf et l'ouvre directement
+            SauvegarderEtOuvrirPdf();
         }
 
         /// <summary>
@@ -138,17 +168,18 @@ namespace Notes
             c_tf = new XTextFormatter(c_Gfx);
             c_tf.Alignment = XParagraphAlignment.Left;
 
-            c_FontBig         = new XFont("Verdana", 16, XFontStyle.BoldItalic);
-            c_FontNormal      = new XFont("Verdana", 12, XFontStyle.Regular);
-            c_FontNormalBold  = new XFont("Verdana", 12, XFontStyle.Bold);
+            c_FontBig         = new XFont("Verdana", 14, XFontStyle.BoldItalic);
+            c_FontNormal      = new XFont("Verdana", 11, XFontStyle.Regular);
+            c_FontNormalBold  = new XFont("Verdana", 11, XFontStyle.Bold);
             c_FontExtraSmall  = new XFont("Verdana",  8, XFontStyle.Regular);
-            c_FontSmall       = new XFont("Verdana", 10, XFontStyle.Regular);
-            c_FontSmallBold   = new XFont("Verdana", 10, XFontStyle.Bold);
+            c_FontSmall       = new XFont("Verdana", 9, XFontStyle.Regular);
+            c_FontSmallBold   = new XFont("Verdana", 9, XFontStyle.Bold);
             c_FontSmallItalic = new XFont("Verdana",  8, XFontStyle.Italic);
 
             // Brushs et pens
             c_Brush     = XBrushes.Black;
             c_Pen       = new XPen(XColors.Black, 1);
+            c_PenThin   = new XPen(XColors.Gray, 0.5f);
             c_HeaderPen = new XPen(XColors.DeepSkyBlue, 4);
         }
 
@@ -183,6 +214,11 @@ namespace Notes
             c_PositionRectangleAdresse = new XRect(c_Page.Width - 300, c_PositionTitre.Top + 40, 250, 100);
             c_PositionTexteAdresse     = new XRect(c_PositionRectangleAdresse.Left + 20,
                 c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
+
+            c_ColonneMatiere        = new XPoint(170, c_DebutTableau + 50);
+            c_ColonneMoyenneEleve   = new XPoint(220, c_DebutTableau + 50);
+            c_ColonneMoyenneGroupe  = new XPoint(220+45, c_DebutTableau + 50);
+ 
         }
 
         /// <summary>
@@ -198,10 +234,27 @@ namespace Notes
             c_Gfx.DrawImage(logo, c_PositionLogo);
 
             // Année scolaire en haut à droite
-            c_Gfx.DrawString("Année Scolaire : 2015-2016", c_FontSmall, c_Brush, c_PositionAnneeScolaire);
+            int l_AnneeDebut = c_Semestre.getDebut().Year;
+            string l_TexteAnnee = "Année scolaire " + (l_AnneeDebut-1) + " - " + l_AnneeDebut;
+            c_Gfx.DrawString(l_TexteAnnee, c_FontSmall, c_Brush, c_PositionAnneeScolaire);
 
             // Titre
-            c_Gfx.DrawString("Bulletin du 1er trimestre", c_FontBig, c_Brush, c_PositionTitre);
+            int l_Semestre = c_Semestre.getNumero();
+
+            // Texte du semestre, premier ou deuxième
+
+            string l_TexteSemestre;
+
+            if (l_Semestre == 1)
+            {
+                l_TexteSemestre = "Bulletin du premier semestre " + c_Semestre.getDebut().Year.ToString();
+            }
+            else
+            {
+                l_TexteSemestre = "Bulletin du second semestre " + c_Semestre.getDebut().Year.ToString();
+            }
+
+            c_Gfx.DrawString(l_TexteSemestre, c_FontBig, c_Brush, c_PositionTitre);
         }
 
         /// <summary>
@@ -216,7 +269,7 @@ namespace Notes
             // Texte adresse
             string adresseComplete = "M. " + c_Eleve.getNom() + " " + c_Eleve.getPrenom() + "\n" + c_Eleve.getAdresse();
 
-            c_tf.DrawString(adresseComplete, c_FontSmall, c_Brush, c_PositionTexteAdresse, XStringFormats.TopLeft);
+            c_tf.DrawString(adresseComplete, c_FontNormal, c_Brush, c_PositionTexteAdresse, XStringFormats.TopLeft);
         }
 
         /// <summary>
@@ -229,10 +282,13 @@ namespace Notes
 
             // Texte header
 
-            c_Gfx.DrawString("Matière", c_FontSmallBold, c_Brush, new XPoint(30, c_DebutTableau + 30));
-            c_Gfx.DrawString("Elève", c_FontSmallBold, c_Brush, new XPoint(180, c_DebutTableau + 30));
-            c_Gfx.DrawString("Groupe", c_FontSmallBold, c_Brush, new XPoint(240, c_DebutTableau + 30));
-            c_Gfx.DrawString("Appréciations des professeurs", c_FontSmallBold, c_Brush, new XPoint(300, c_DebutTableau + 30));
+            c_Gfx.DrawString("Matière", c_FontSmallBold, c_Brush, new XPoint( 30, c_DebutTableau + 35));
+            c_Gfx.DrawString("Elève",   c_FontSmallBold, c_Brush, new XPoint(180, c_DebutTableau + 35));
+            c_Gfx.DrawString("Moyenne", c_FontSmallBold, c_Brush, new XPoint(255, c_DebutTableau + 20));
+            c_Gfx.DrawString("Groupe",  c_FontSmallBold, c_Brush, new XPoint(225, c_DebutTableau + 35));
+            c_Gfx.DrawString("Min.",    c_FontSmallBold, c_Brush, new XPoint(280, c_DebutTableau + 35));
+            c_Gfx.DrawString("Max.",    c_FontSmallBold, c_Brush, new XPoint(310, c_DebutTableau + 35));
+            c_Gfx.DrawString("Appréciations des professeurs", c_FontSmallBold, c_Brush, new XPoint(350, c_DebutTableau + 35));
         }
 
         /// <summary>
@@ -275,19 +331,40 @@ namespace Notes
                     l_Appreciation = l_Appreciation.Substring(0, l_LongueurMaxAppreciation);
                 }
 
-                XRect l_PositionAppreciation = new XRect(300, c_DebutTableau + c_NumMatiere*c_HauteurLigne
-                    +15, 260, c_HauteurLigne + 10);
+                XRect l_PositionAppreciation = new XRect(340, c_DebutTableau + c_NumMatiere*c_HauteurLigne
+                    +15, 240, c_HauteurLigne + 10);
 
                 c_tf.DrawString(l_Appreciation, c_FontExtraSmall, c_Brush, l_PositionAppreciation, XStringFormats.TopLeft);
 
                 // Moyenne groupe
                 double moyenneGroupe = c_Groupe.MoyenneGroupePourMatiere(matiere);
-                c_Gfx.DrawString(Math.Round(moyenneGroupe, 2).ToString(), c_FontSmallBold, c_Brush,
-                    new XPoint(250, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+                c_Gfx.DrawString(Math.Round(moyenneGroupe, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(230, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+
+                // Moyenne minimum du groupe
+                double l_MoyenneMinimumMatiere = c_Groupe.getMoyenneMinimumPourMatiere(matiere);
+                c_Gfx.DrawString(Math.Round(l_MoyenneMinimumMatiere, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(280, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+
+                // Moyenne maximum du groupe
+                double l_MoyenneMaximumMatiere = c_Groupe.getMoyenneMaximumPourMatiere(matiere);
+                c_Gfx.DrawString(Math.Round(l_MoyenneMaximumMatiere, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(300, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
 
                 // La position de la dernière ligne
                 c_DerniereLigneTop = positionTop;
             }
+        }
+
+        /// <summary>
+        /// Dessine les lignes des colonnes
+        /// </summary>
+        public void DessinerColonnes()
+        {
+            double l_FinLigneY = c_DerniereLigneTop + c_HauteurLigne;
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMatiere, new XPoint(c_ColonneMatiere.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneEleve, new XPoint(c_ColonneMoyenneEleve.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneGroupe, new XPoint(c_ColonneMoyenneGroupe.X, l_FinLigneY));
         }
 
         /// <summary>
