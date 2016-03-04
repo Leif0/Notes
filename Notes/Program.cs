@@ -64,9 +64,15 @@ namespace Notes
                 }
 
                 // Appréciations aléatoires
-                cls_Appreciation appreciation1 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereDev);
-                cls_Appreciation appreciation2 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereHTML);
-                cls_Appreciation appreciation3 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereMathematique);
+                // Premier semestre
+                cls_Appreciation appreciation1 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereDev, l_Semestre1);
+                cls_Appreciation appreciation2 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereHTML, l_Semestre1);
+                cls_Appreciation appreciation3 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereMathematique, l_Semestre1);
+
+                // Deuxième semestre
+                cls_Appreciation appreciation4 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereDev, l_Semestre2);
+                cls_Appreciation appreciation5 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereHTML, l_Semestre2);
+                cls_Appreciation appreciation6 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereMathematique, l_Semestre2);
             }
 
             // Affichage

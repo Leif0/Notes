@@ -58,6 +58,8 @@ namespace Notes
         private XPoint c_ColonneMoyenneEleve;
         private XPoint c_ColonneMoyenneGroupe;
         private XPoint c_ColonneAppreciation;
+        private XPoint c_ColonneMoyenneMin;
+        private XPoint c_ColonneMoyenneMax;
 
         // Variables pour le dessin du tableau
         private int     c_NumMatiere;
@@ -100,6 +102,8 @@ namespace Notes
 
             // Met l'élève dans la classe car il est utilisé plus tard
             c_Eleve = pEleve;
+
+            CreerPdf();
         }
 
         public void CreerPdf()
@@ -216,9 +220,10 @@ namespace Notes
                 c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
 
             c_ColonneMatiere        = new XPoint(170, c_DebutTableau + 50);
-            c_ColonneMoyenneEleve   = new XPoint(220, c_DebutTableau + 50);
-            c_ColonneMoyenneGroupe  = new XPoint(220+45, c_DebutTableau + 50);
- 
+            c_ColonneMoyenneEleve   = new XPoint(c_ColonneMatiere.X + 45, c_DebutTableau + 50);
+            c_ColonneMoyenneGroupe  = new XPoint(c_ColonneMoyenneEleve .X + 45, c_DebutTableau + 50);
+            c_ColonneMoyenneMin     = new XPoint(c_ColonneMoyenneGroupe.X + 33, c_DebutTableau + 50);
+            c_ColonneMoyenneMax     = new XPoint(c_ColonneMoyenneMin.X + 33, c_DebutTableau + 50);
         }
 
         /// <summary>
@@ -285,9 +290,9 @@ namespace Notes
             c_Gfx.DrawString("Matière", c_FontSmallBold, c_Brush, new XPoint( 30, c_DebutTableau + 35));
             c_Gfx.DrawString("Elève",   c_FontSmallBold, c_Brush, new XPoint(180, c_DebutTableau + 35));
             c_Gfx.DrawString("Moyenne", c_FontSmallBold, c_Brush, new XPoint(255, c_DebutTableau + 20));
-            c_Gfx.DrawString("Groupe",  c_FontSmallBold, c_Brush, new XPoint(225, c_DebutTableau + 35));
-            c_Gfx.DrawString("Min.",    c_FontSmallBold, c_Brush, new XPoint(280, c_DebutTableau + 35));
-            c_Gfx.DrawString("Max.",    c_FontSmallBold, c_Brush, new XPoint(310, c_DebutTableau + 35));
+            c_Gfx.DrawString("Groupe",  c_FontSmall, c_Brush, new XPoint(220, c_DebutTableau + 35));
+            c_Gfx.DrawString("Min.",    c_FontSmall, c_Brush, new XPoint(270, c_DebutTableau + 35));
+            c_Gfx.DrawString("Max.",    c_FontSmall, c_Brush, new XPoint(300, c_DebutTableau + 35));
             c_Gfx.DrawString("Appréciations des professeurs", c_FontSmallBold, c_Brush, new XPoint(350, c_DebutTableau + 35));
         }
 
@@ -317,13 +322,31 @@ namespace Notes
                 c_Gfx.DrawString(matiere.getProfesseur(), c_FontSmallItalic, c_Brush,
                     new XPoint(30, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 40));
 
-                // Moyenne eleve pour cette matière
-                double moyenne = c_Eleve.MoyenneMatiere(matiere);
-                c_Gfx.DrawString(Math.Round(moyenne, 2).ToString(), c_FontSmallBold, c_Brush,
-                    new XPoint(180, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+                // Moyenne eleve pour cette matière pour ce semestre
+                double l_moyenne;
+                l_moyenne = c_Eleve.MoyenneMatiereSemestre(matiere, c_Semestre);
+
+                c_Gfx.DrawString(Math.Round(l_moyenne, 2).ToString(), c_FontSmallBold, c_Brush,
+                    new XPoint(175, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+
+                // Moyenne groupe
+                double moyenneGroupe = c_Groupe.MoyenneGroupePourMatiereSemestre(matiere, c_Semestre);
+                c_Gfx.DrawString(Math.Round(moyenneGroupe, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(225, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+
+                // Moyenne minimum du groupe
+                double l_MoyenneMinimumMatiere = c_Groupe.getMoyenneMinimumPourMatiereSemestre(matiere, c_Semestre);
+                c_Gfx.DrawString(Math.Round(l_MoyenneMinimumMatiere, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(265, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+
+                // Moyenne maximum du groupe
+                double l_MoyenneMaximumMatiere = c_Groupe.getMoyenneMaximumPourMatiereSemestre(matiere, c_Semestre);
+                c_Gfx.DrawString(Math.Round(l_MoyenneMaximumMatiere, 2).ToString(), c_FontSmall, c_Brush,
+                    new XPoint(295, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
 
                 // Appreciation pour cette matière
-                string l_Appreciation = c_Eleve.getAppreciation(matiere).getTexte();
+                string l_Appreciation = c_Eleve.getAppreciationSemestre(matiere, c_Semestre).getTexte();
+
                 int l_LongueurMaxAppreciation = 100;
 
                 if (l_Appreciation.Length > l_LongueurMaxAppreciation)
@@ -331,25 +354,10 @@ namespace Notes
                     l_Appreciation = l_Appreciation.Substring(0, l_LongueurMaxAppreciation);
                 }
 
-                XRect l_PositionAppreciation = new XRect(340, c_DebutTableau + c_NumMatiere*c_HauteurLigne
-                    +15, 240, c_HauteurLigne + 10);
+                XRect l_PositionAppreciation = new XRect(340, c_DebutTableau + c_NumMatiere * c_HauteurLigne
+                    + 10, 200, c_HauteurLigne + 10);
 
                 c_tf.DrawString(l_Appreciation, c_FontExtraSmall, c_Brush, l_PositionAppreciation, XStringFormats.TopLeft);
-
-                // Moyenne groupe
-                double moyenneGroupe = c_Groupe.MoyenneGroupePourMatiere(matiere);
-                c_Gfx.DrawString(Math.Round(moyenneGroupe, 2).ToString(), c_FontSmall, c_Brush,
-                    new XPoint(230, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
-
-                // Moyenne minimum du groupe
-                double l_MoyenneMinimumMatiere = c_Groupe.getMoyenneMinimumPourMatiere(matiere);
-                c_Gfx.DrawString(Math.Round(l_MoyenneMinimumMatiere, 2).ToString(), c_FontSmall, c_Brush,
-                    new XPoint(280, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
-
-                // Moyenne maximum du groupe
-                double l_MoyenneMaximumMatiere = c_Groupe.getMoyenneMaximumPourMatiere(matiere);
-                c_Gfx.DrawString(Math.Round(l_MoyenneMaximumMatiere, 2).ToString(), c_FontSmall, c_Brush,
-                    new XPoint(300, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
 
                 // La position de la dernière ligne
                 c_DerniereLigneTop = positionTop;
@@ -362,9 +370,11 @@ namespace Notes
         public void DessinerColonnes()
         {
             double l_FinLigneY = c_DerniereLigneTop + c_HauteurLigne;
-            c_Gfx.DrawLine(c_PenThin, c_ColonneMatiere, new XPoint(c_ColonneMatiere.X, l_FinLigneY));
-            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneEleve, new XPoint(c_ColonneMoyenneEleve.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMatiere,       new XPoint(c_ColonneMatiere.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneEleve,  new XPoint(c_ColonneMoyenneEleve.X, l_FinLigneY));
             c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneGroupe, new XPoint(c_ColonneMoyenneGroupe.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneMin,    new XPoint(c_ColonneMoyenneMin.X, l_FinLigneY));
+            c_Gfx.DrawLine(c_PenThin, c_ColonneMoyenneMax,    new XPoint(c_ColonneMoyenneMax.X, l_FinLigneY));
         }
 
         /// <summary>

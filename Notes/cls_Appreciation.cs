@@ -11,6 +11,7 @@ namespace Notes
         private string c_Texte;
         private cls_Eleve c_Eleve;
         private cls_Matiere c_Matiere;
+        private cls_Semestre c_Semestre;
 
         /// <summary>
         /// Instancie une appreciation pour un élève dans une matière specifique
@@ -18,12 +19,13 @@ namespace Notes
         /// <param name="pTexte">Texte de l'appreciation, donnée par le professeur</param>
         /// <param name="pEleve">Eleve concerné par l'appreciation</param>
         /// <param name="pMatiere">Matière dans laquelle l'appréciation a été donnée</param>
-        public cls_Appreciation(string pTexte, cls_Eleve pEleve, cls_Matiere pMatiere)
+        public cls_Appreciation(string pTexte, cls_Eleve pEleve, cls_Matiere pMatiere, cls_Semestre pSemestre)
         {
             setTexte(pTexte);
             setEleve(pEleve);
             setMatiere(pMatiere);
             pEleve.ajouterAppreciation(this);
+            setSemestre(pSemestre);
         }
 
         /// <summary>
@@ -78,6 +80,16 @@ namespace Notes
         public cls_Matiere getMatiere()
         {
             return c_Matiere;
+        }
+
+        public void setSemestre(cls_Semestre pSemestre)
+        {
+            c_Semestre = pSemestre;
+        }
+
+        public cls_Semestre getSemestre()
+        {
+            return c_Semestre;
         }
     }
 }

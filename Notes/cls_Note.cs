@@ -32,7 +32,7 @@ namespace Notes
         /// Récupère le semestre où cette note a été donnée
         /// </summary>
         /// <returns>Semestre</returns>
-        private cls_Semestre getSemestre()
+        public cls_Semestre getSemestre()
         {
             return c_Semestre;
         }
@@ -41,7 +41,7 @@ namespace Notes
         /// Modifie le semestre où cette note a été donnée
         /// </summary>
         /// <param name="pSemestre">Semestre de la note</param>
-        private void setSemestre(cls_Semestre pSemestre)
+        public void setSemestre(cls_Semestre pSemestre)
         {
             c_Semestre = pSemestre;
         }

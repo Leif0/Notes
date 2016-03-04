@@ -201,6 +201,29 @@ namespace Notes
         }
 
         /// <summary>
+        /// Retourne la moyenne du semestre pour l'élève
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <param name="pSemestre">Semestre</param>
+        /// <returns></returns>
+        public double MoyenneMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
+        {
+            double cumul = 0;
+            int totalNotes = 0;
+
+            for (int i = 0; i < c_Notes.Count; i++)
+            {
+                if (c_Notes[i].getDevoir().getMatiere() == pMatiere && 
+                   pSemestre == c_Notes[i].getSemestre() )
+                {
+                    cumul += c_Notes[i].getValeur();
+                    totalNotes++;
+                }
+            }
+            return cumul / totalNotes;
+        }
+
+        /// <summary>
         /// Modifie l'adresse de l'élève
         /// </summary>
         /// <param name="pAdresse">Adresse de l'élève</param>
@@ -247,6 +270,24 @@ namespace Notes
             else
             {
                 throw new Exception("Aucune appréciation");
+            }
+        }
+
+        public cls_Appreciation getAppreciationSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
+        {
+            cls_Appreciation result = c_Appreciations.Find(
+                delegate (cls_Appreciation ap)
+                {
+                    return ap.getMatiere() == pMatiere && ap.getSemestre() == pSemestre;
+                }
+                );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception("Aucune appréciation pour ce semestre et cette matière");
             }
         }
     }
