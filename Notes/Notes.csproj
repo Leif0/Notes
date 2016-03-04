@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="backup.cs" />
+    <Compile Include="cls_Appreciation.cs" />
     <Compile Include="cls_Devoir.cs" />
     <Compile Include="cls_Eleve.cs" />
     <Compile Include="cls_Groupe.cs" />

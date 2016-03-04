@@ -56,6 +56,11 @@ namespace Notes
 
                 noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
                 cls_Note Note3 = new cls_Note(noteAleatoire, MonEleve, Devoir3);
+
+                // Appréciations aléatoires
+                cls_Appreciation appreciation1 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereDev);
+                cls_Appreciation appreciation2 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereHTML);
+                cls_Appreciation appreciation3 = new cls_Appreciation(Faker.TextFaker.Sentence(), MonEleve, l_MatiereMathematique);
             }
 
             // Affichage

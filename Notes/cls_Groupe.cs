@@ -12,6 +12,10 @@ namespace Notes
         private List<cls_Eleve> c_ListeEleve;
         private List<cls_Matiere> c_Matieres;
 
+        /// <summary>
+        /// Créer un nouveau groupe
+        /// </summary>
+        /// <param name="pLibelle">Le libellé du groupe</param>
         public cls_Groupe(string pLibelle)
         {
             setLibelle(pLibelle);
@@ -19,6 +23,10 @@ namespace Notes
             c_Matieres = new List<cls_Matiere>();
         }
 
+        /// <summary>
+        /// Modifie le libellé
+        /// </summary>
+        /// <param name="pLibelle">Libellé du groupe</param>
         public void setLibelle(string pLibelle)
         {
             if (pLibelle != "")
@@ -31,32 +39,56 @@ namespace Notes
             }
             
         }
-
+        /// <summary>
+        /// Retourne le libellé du groupe
+        /// </summary>
+        /// <returns>Libellé du groupe</returns>
         public string getLibelle()
         {
             return c_Libelle;
         }
 
+        /// <summary>
+        /// Retourne la liste des élèves dans ce groupe
+        /// </summary>
+        /// <returns>Liste des élèves dans ce groupe</returns>
         public List<cls_Eleve> getListeEleve()
         {
             return c_ListeEleve;
         }
 
+        /// <summary>
+        /// Ajoute un élève au groupe
+        /// </summary>
+        /// <param name="pEleve">L'élève à ajouter au groupe</param>
         public void ajouterEleve(cls_Eleve pEleve)
         {
             c_ListeEleve.Add(pEleve);
         }
 
+        /// <summary>
+        /// Ajoute une matière au groupe
+        /// </summary>
+        /// <param name="pMatiere">Matière à ajouter au groupe</param>
         public void ajouterMatiere(cls_Matiere pMatiere)
         {
             c_Matieres.Add(pMatiere);
         }
 
+        /// <summary>
+        /// Retourne la matière
+        /// </summary>
+        /// <returns>Matière</returns>
         public List<cls_Matiere> getMatiere()
         {
             return c_Matieres;
         }
 
+        /// <summary>
+        /// Retourne la moyenne du groupe pour la matière
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <returns>Moyenne du groupe pour la matière</returns>
         public double MoyenneGroupePourMatiere(cls_Matiere pMatiere)
         {
             double cumul = 0;

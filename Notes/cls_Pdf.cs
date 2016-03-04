@@ -28,10 +28,12 @@ namespace Notes
         private XGraphics c_Gfx;
 
         // Font
+        private XTextFormatter c_tf;
         private XFont c_FontBig;
         private XFont c_FontNormal;
         private XFont c_FontNormalBold;
         private XFont c_FontSmall;
+        private XFont c_FontExtraSmall;
         private XFont c_FontSmallBold;
         private XFont c_FontSmallItalic;
 
@@ -59,7 +61,10 @@ namespace Notes
 
         private string c_NomEtablissement;
 
-
+        /// <summary>
+        /// Constructeur d'un fichier PDF. Le PDF est crée au moment de l'initialisation.
+        /// </summary>
+        /// <param name="pGroupe">Groupe</param>
         public cls_Pdf(cls_Groupe pGroupe)
         {
             // Recupère le dossier courant pour les images
@@ -107,6 +112,9 @@ namespace Notes
             }
         }
 
+        /// <summary>
+        /// Créer le document Pdf et la page
+        /// </summary>
         public void CreerDocument()
         {
             // Créer un nouveau document
@@ -117,15 +125,23 @@ namespace Notes
             c_Page = c_Bulletin.AddPage();
         }
 
+        /// <summary>
+        /// Initialise les outils nécessaires au dessin dans le Pdf.
+        /// Créer les polices, l'objet XGraphics, et les pinceaux
+        /// </summary>
         public void InitialiserOutils()
         {
             // Objet pour dessiner
             c_Gfx = XGraphics.FromPdfPage(c_Page);
 
             // Font et brush
+            c_tf = new XTextFormatter(c_Gfx);
+            c_tf.Alignment = XParagraphAlignment.Left;
+
             c_FontBig         = new XFont("Verdana", 16, XFontStyle.BoldItalic);
             c_FontNormal      = new XFont("Verdana", 12, XFontStyle.Regular);
             c_FontNormalBold  = new XFont("Verdana", 12, XFontStyle.Bold);
+            c_FontExtraSmall  = new XFont("Verdana",  8, XFontStyle.Regular);
             c_FontSmall       = new XFont("Verdana", 10, XFontStyle.Regular);
             c_FontSmallBold   = new XFont("Verdana", 10, XFontStyle.Bold);
             c_FontSmallItalic = new XFont("Verdana",  8, XFontStyle.Italic);
@@ -136,6 +152,10 @@ namespace Notes
             c_HeaderPen = new XPen(XColors.DeepSkyBlue, 4);
         }
 
+        /// <summary>
+        /// Initialise les variables utilisés pour le positionnement des éléments
+        /// mais aussi la hauteur des lignes, taille du tableau, etc.
+        /// </summary>
         private void InitialiserVariables()
         {
             // Position de début du tableau par rapport au haut de la page
@@ -165,6 +185,9 @@ namespace Notes
                 c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
         }
 
+        /// <summary>
+        /// Dessine le haut du document : Nom de l'établissement, logo, année scolaire et titre
+        /// </summary>
         public void DessinerHautDocument()
         {
             // Nom du lycée en haut à gauche
@@ -181,21 +204,24 @@ namespace Notes
             c_Gfx.DrawString("Bulletin du 1er trimestre", c_FontBig, c_Brush, c_PositionTitre);
         }
 
+        /// <summary>
+        /// Dessine un rectangle et l'adresse à l'intérieur
+        /// </summary>
         public void DessinerAdresse()
         {
             // Rectangle adresse
             XSize size = new XSize(4, 4);
             c_Gfx.DrawRoundedRectangle(c_Pen, c_PositionRectangleAdresse, size);
 
-            XTextFormatter tf = new XTextFormatter(c_Gfx);
-            tf.Alignment = XParagraphAlignment.Left;
-
             // Texte adresse
             string adresseComplete = "M. " + c_Eleve.getNom() + " " + c_Eleve.getPrenom() + "\n" + c_Eleve.getAdresse();
 
-            tf.DrawString(adresseComplete, c_FontSmall, c_Brush, c_PositionTexteAdresse, XStringFormats.TopLeft);
+            c_tf.DrawString(adresseComplete, c_FontSmall, c_Brush, c_PositionTexteAdresse, XStringFormats.TopLeft);
         }
 
+        /// <summary>
+        /// Dessine le header du tableau et le texte
+        /// </summary>
         public void DessinerTableau()
         {
             // Header du tableau
@@ -209,6 +235,10 @@ namespace Notes
             c_Gfx.DrawString("Appréciations des professeurs", c_FontSmallBold, c_Brush, new XPoint(300, c_DebutTableau + 30));
         }
 
+        /// <summary>
+        /// Dessine les différents lignes du tableau.
+        /// Une ligne = une matière
+        /// </summary>
         private void DessinerLignesTableau()
         {
             // Lignes du tableau
@@ -236,17 +266,33 @@ namespace Notes
                 c_Gfx.DrawString(Math.Round(moyenne, 2).ToString(), c_FontSmallBold, c_Brush,
                     new XPoint(180, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
 
+                // Appreciation pour cette matière
+                string l_Appreciation = c_Eleve.getAppreciation(matiere).getTexte();
+                int l_LongueurMaxAppreciation = 100;
+
+                if (l_Appreciation.Length > l_LongueurMaxAppreciation)
+                {
+                    l_Appreciation = l_Appreciation.Substring(0, l_LongueurMaxAppreciation);
+                }
+
+                XRect l_PositionAppreciation = new XRect(300, c_DebutTableau + c_NumMatiere*c_HauteurLigne
+                    +15, 260, c_HauteurLigne + 10);
+
+                c_tf.DrawString(l_Appreciation, c_FontExtraSmall, c_Brush, l_PositionAppreciation, XStringFormats.TopLeft);
+
                 // Moyenne groupe
                 double moyenneGroupe = c_Groupe.MoyenneGroupePourMatiere(matiere);
                 c_Gfx.DrawString(Math.Round(moyenneGroupe, 2).ToString(), c_FontSmallBold, c_Brush,
                     new XPoint(250, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
-
 
                 // La position de la dernière ligne
                 c_DerniereLigneTop = positionTop;
             }
         }
 
+        /// <summary>
+        /// Dessine la moyenne générale à la fin du tableau, après la dernière ligne
+        /// </summary>
         public void DessinerMoyenneGenerale()
         {
             // Doit être fait une fois qu'on connais la position de la dernière ligne !
@@ -260,6 +306,9 @@ namespace Notes
                 new XPoint(30, c_PositionMoyenneGenerale.Top + 15));
         }
 
+        /// <summary>
+        /// Dessine un cachet et la date d'aujourd'hui en bas du document
+        /// </summary>
         public void DessinerCachetEtDate()
         {
             // Date
@@ -272,6 +321,9 @@ namespace Notes
             c_Gfx.DrawImage(cachet, c_LargeurTotalTableau - 140, c_PositionMoyenneGenerale.Top + 60, 120, 120);
         }
 
+        /// <summary>
+        /// Sauvegarde le fichier PDF au format BulletinNomPrenom.pdf et l'ouvre directement
+        /// </summary>
         public void SauvegarderEtOuvrirPdf()
         {
             // Sauvegarde le PDF

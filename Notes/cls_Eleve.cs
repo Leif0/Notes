@@ -13,8 +13,32 @@ namespace Notes
         private DateTime c_DateNaissance;
         private cls_Groupe c_Groupe;
         private List<cls_Note> c_Notes;
+        private List<cls_Appreciation> c_Appreciations; 
         static Random rnd = new Random();
         private string c_Adresse;
+
+        public void ajouterAppreciation(cls_Appreciation pAppreciation)
+        {
+            c_Appreciations.Add(pAppreciation);
+        }
+
+        public cls_Appreciation getAppreciation(cls_Matiere pMatiere)
+        {
+            cls_Appreciation result = c_Appreciations.Find(
+                delegate(cls_Appreciation ap)
+                {
+                    return ap.getMatiere() == pMatiere;
+                }
+                );
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception("Aucune appréciation");
+            }
+        }
 
         /// <summary>
         /// Créer un nouvel élève
@@ -33,6 +57,7 @@ namespace Notes
             pGroupe.ajouterEleve(this);
             c_Notes = new List<cls_Note>();
             setAdresse(pAdresse);
+            c_Appreciations = new List<cls_Appreciation>();
         }
 
         /// <summary>
@@ -44,55 +69,87 @@ namespace Notes
             return c_Nom;
         }
 
-        public void setNom(string pValeur)
+        /// <summary>
+        /// Modifie le nom de l'élève
+        /// </summary>
+        /// <param name="pNom">Nom de l'élève</param>
+        public void setNom(string pNom)
         {
-            if(pValeur == "")
+            if(pNom == "")
             {
                 throw new Exception("Le nom ne doit pas être vide");
             }
             else
             {
-                c_Nom = pValeur;
+                c_Nom = pNom;
             }
         }
 
+        /// <summary>
+        /// Modifie le prénom de l'élève
+        /// </summary>
+        /// <returns>Prénom de l'élève</returns>
         public string getPrenom()
         {
             return c_Prenom;
         }
 
-        public void setPrenom(string pValeur)
+        /// <summary>
+        /// Modifie le prénom de l'élève
+        /// </summary>
+        /// <param name="pPrenom">Prénom de l'élève</param>
+        public void setPrenom(string pPrenom)
         {
-            if (pValeur == "")
+            if (pPrenom == "")
             {
                 throw new Exception("Le prénom ne doit pas être vide");
             }
             else
             {
-                c_Prenom = pValeur;
+                c_Prenom = pPrenom;
             }
         }
 
+        /// <summary>
+        /// Retourne le groupe
+        /// </summary>
+        /// <returns>Groupe</returns>
         public cls_Groupe getGroupe()
         {
             return c_Groupe;
         }
 
+        /// <summary>
+        /// Modifie le groupe de l'élève
+        /// </summary>
+        /// <param name="pGroupe">Groupe de l'élève</param>
         public void setGroupe(cls_Groupe pGroupe)
         {
             c_Groupe = pGroupe;
         }
 
+        /// <summary>
+        /// Retourne la date de naissance de l'élève
+        /// </summary>
+        /// <returns>Date de naissance de l'élève</returns>
         public DateTime getDateNaissance()
         {
             return c_DateNaissance;
         }
 
+        /// <summary>
+        /// Modifie la date de naissance de l'élève
+        /// </summary>
+        /// <param name="pDate">Date de naissance de l'élève</param>
         public void setDateNaissance(DateTime pDate)
         {
             c_DateNaissance = pDate;
         }
 
+        /// <summary>
+        /// Retourne l'âge de l'élève
+        /// </summary>
+        /// <returns>Age de l'élève</returns>
         public int Age()
         {
             DateTime now = DateTime.Now;
@@ -106,16 +163,28 @@ namespace Notes
             return age;
         }
 
+        /// <summary>
+        /// Ajoute une note à l'élève
+        /// </summary>
+        /// <param name="pNote">Note à ajouter</param>
         public void ajouterNote(cls_Note pNote)
         {
             c_Notes.Add(pNote);
         }
 
+        /// <summary>
+        /// Retourne la liste des notes de l'élève
+        /// </summary>
+        /// <returns>Liste des notes de l'élève</returns>
         public List<cls_Note> getNotes()
         {
             return c_Notes;
         }
 
+        /// <summary>
+        /// Retourne la moyenne générale de l'élève
+        /// </summary>
+        /// <returns>Moyenne générale de l'élève</returns>
         public double Moyenne()
         { 
             double total = 0, totalNotes = 0;
@@ -133,6 +202,11 @@ namespace Notes
             return total / totalNotes;
         }
 
+        /// <summary>
+        /// Retourne la moyenne de l'élève pour une matière spécifique
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <returns>Moyenne de l'élève pour une matière spécifique</returns>
         public double MoyenneMatiere(cls_Matiere pMatiere)
         {
             double cumul = 0;
@@ -147,11 +221,19 @@ namespace Notes
             return cumul;
         }
 
+        /// <summary>
+        /// Modifie l'adresse de l'élève
+        /// </summary>
+        /// <param name="pAdresse">Adresse de l'élève</param>
         public void setAdresse(string pAdresse)
         {
             c_Adresse = pAdresse;
         }
 
+        /// <summary>
+        /// Retourne l'adresse de l'élève
+        /// </summary>
+        /// <returns>Adresse de l'élève</returns>
         public string getAdresse()
         {
             return c_Adresse;
