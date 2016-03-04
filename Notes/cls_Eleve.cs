@@ -158,8 +158,22 @@ namespace Notes
             return c_Notes;
         }
 
+        public List<cls_Note> getNotesMatiere(cls_Matiere pMatiere)
+        {
+            List<cls_Note> l_NotesMatiere = new List<cls_Note>();
+            foreach (cls_Note l_note in c_Notes)
+            {
+                if (l_note.getDevoir().getMatiere() == pMatiere)
+                {
+                    l_NotesMatiere.Add(l_note);
+                }
+            }
+
+            return l_NotesMatiere;
+        } 
+
         /// <summary>
-        /// Retourne la moyenne générale de l'élève
+        /// Retourne la moyenne générale de l'élève à l'année
         /// </summary>
         /// <returns>Moyenne générale de l'élève</returns>
         public double Moyenne()
@@ -174,6 +188,26 @@ namespace Notes
                 double noteAvecCoeff = l_note.getValeur() * coefficient;
                 total += noteAvecCoeff;
                 totalNotes += coefficient;
+            }
+
+            return total / totalNotes;
+        }
+
+        public double MoyenneSemestre(cls_Semestre pSemestre)
+        {
+            double total = 0, totalNotes = 0;
+            int coefficient;
+
+            foreach (var l_note in c_Notes)
+            {
+                if (l_note.getSemestre() == pSemestre)
+                {
+                    coefficient = l_note.getDevoir().getMatiere().getCoefficient();
+
+                    double noteAvecCoeff = l_note.getValeur() * coefficient;
+                    total += noteAvecCoeff;
+                    totalNotes += coefficient;
+                }
             }
 
             return total / totalNotes;

@@ -83,6 +83,58 @@ namespace Notes
         {
             return c_Matieres;
         }
+        /// <summary>
+        /// Retourne la moyenne du groupe pour une matière pour un semestre
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <param name="pSemestre">Semestre</param>
+        /// <returns></returns>
+        public double MoyenneGroupePourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
+        {
+            double cumul = 0;
+
+            foreach (cls_Eleve eleve in c_ListeEleve)
+            {
+                cumul += eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
+            }
+            return cumul / c_ListeEleve.Count;
+        }
+
+        public double getMoyenneMinimumPourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
+        {
+            double l_MoyenneMinimum = 20;
+
+            foreach (cls_Eleve l_Eleve in c_ListeEleve)
+            {
+                double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
+
+                if (l_MoyenneEleve < l_MoyenneMinimum)
+                {
+                    l_MoyenneMinimum = l_MoyenneEleve;
+                }
+            }
+            return l_MoyenneMinimum;
+        }
+
+        public double getMoyenneMaximumPourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
+        {
+            double l_MoyenneMaximum = 0;
+
+            foreach (cls_Eleve l_Eleve in c_ListeEleve)
+            {
+                double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
+
+                if (l_MoyenneEleve > l_MoyenneMaximum)
+                {
+                    l_MoyenneMaximum = l_MoyenneEleve;
+                }
+            }
+            return l_MoyenneMaximum;
+        }
+
+        /*
+        * Non utilisé pour l'instant, remplacé par les moyennes des semestres
+        */
 
         /// <summary>
         /// Retourne la moyenne du groupe pour la matière
@@ -131,48 +183,6 @@ namespace Notes
             }
             return l_MoyenneMaximum;
         }
-
-        public double MoyenneGroupePourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
-        {
-            double cumul = 0;
-
-            foreach (cls_Eleve eleve in c_ListeEleve)
-            {
-                cumul += eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
-            }
-            return cumul / c_ListeEleve.Count;
-        }
-
-        public double getMoyenneMinimumPourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
-        {
-            double l_MoyenneMinimum = 20;
-
-            foreach (cls_Eleve l_Eleve in c_ListeEleve)
-            {
-                double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
-
-                if (l_MoyenneEleve < l_MoyenneMinimum)
-                {
-                    l_MoyenneMinimum = l_MoyenneEleve;
-                }
-            }
-            return l_MoyenneMinimum;
-        }
-
-        public double getMoyenneMaximumPourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
-        {
-            double l_MoyenneMaximum = 0;
-
-            foreach (cls_Eleve l_Eleve in c_ListeEleve)
-            {
-                double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
-
-                if (l_MoyenneEleve > l_MoyenneMaximum)
-                {
-                    l_MoyenneMaximum = l_MoyenneEleve;
-                }
-            }
-            return l_MoyenneMaximum;
-        }
     }
+
 }

@@ -195,7 +195,6 @@ namespace Notes
         {
             // Position de début du tableau par rapport au haut de la page
             c_DebutTableau = 250;
-
             c_HauteurLigne = 50;
 
             // Cumul pour le nombre de matières
@@ -206,7 +205,6 @@ namespace Notes
 
             // Largeur du tableau (taille de la page - marge)
             c_LargeurTotalTableau = (int)c_Page.Width - 40;
-
             c_NomEtablissement = "CFAI Loire";
 
             // Position pour chaque élément
@@ -217,7 +215,7 @@ namespace Notes
             c_PositionLogo             = new XPoint(40, 60);
             c_PositionRectangleAdresse = new XRect(c_Page.Width - 300, c_PositionTitre.Top + 40, 250, 100);
             c_PositionTexteAdresse     = new XRect(c_PositionRectangleAdresse.Left + 20,
-                c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
+                                                  c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
 
             c_ColonneMatiere        = new XPoint(170, c_DebutTableau + 50);
             c_ColonneMoyenneEleve   = new XPoint(c_ColonneMatiere.X + 45, c_DebutTableau + 50);

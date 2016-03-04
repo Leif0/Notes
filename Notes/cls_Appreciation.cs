@@ -82,11 +82,19 @@ namespace Notes
             return c_Matiere;
         }
 
+        /// <summary>
+        /// Modifie le semestre
+        /// </summary>
+        /// <param name="pSemestre">Semestre</param>
         public void setSemestre(cls_Semestre pSemestre)
         {
             c_Semestre = pSemestre;
         }
 
+        /// <summary>
+        /// Retourne le semestre
+        /// </summary>
+        /// <returns>Semestre</returns>
         public cls_Semestre getSemestre()
         {
             return c_Semestre;
