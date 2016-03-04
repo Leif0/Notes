@@ -318,6 +318,10 @@ namespace Notes
                 c_Gfx.DrawString(matiere.getLibelle(), c_FontNormal, c_Brush,
                     new XPoint(30, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 20));
 
+                // Coefficient
+                c_Gfx.DrawString("Coeff. " + matiere.getCoefficient().ToString(), c_FontExtraSmall, c_Brush,
+                    new XPoint(130, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 28));
+
                 // Nom professeur
                 c_Gfx.DrawString(matiere.getProfesseur(), c_FontSmallItalic, c_Brush,
                     new XPoint(30, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 40));

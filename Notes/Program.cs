@@ -33,6 +33,14 @@ namespace Notes
             cls_Devoir Devoir5 = new cls_Devoir("DS Javascript", new DateTime(2016, 01, 18), l_MatiereDev);
             cls_Devoir Devoir6 = new cls_Devoir("DS JavaEE", new DateTime(2016, 05, 24), l_MatiereHTML);
 
+            // Deuxième semestre
+            cls_Devoir Devoir7 = new cls_Devoir("DS Mathématique fonctions", new DateTime(2016, 05, 16), l_MatiereMathematique);
+            cls_Devoir Devoir8 = new cls_Devoir("DS C# objets", new DateTime(2016, 03, 14), l_MatiereDev);
+            cls_Devoir Devoir9 = new cls_Devoir("DS Java orienté objet", new DateTime(2016, 01, 24), l_MatiereHTML);
+            cls_Devoir Devoir10 = new cls_Devoir("DS additions", new DateTime(2015, 08, 24), l_MatiereMathematique);
+            cls_Devoir Devoir11 = new cls_Devoir("DS Cobol", new DateTime(2016, 01, 18), l_MatiereDev);
+            cls_Devoir Devoir12 = new cls_Devoir("DS Go", new DateTime(2016, 05, 24), l_MatiereHTML);
+
             // Hasard
             Random rnd = new Random();
 
@@ -55,12 +63,21 @@ namespace Notes
                 l_Eleves.Add(MonEleve);
 
                 // Ajout des notes aléatoires
-                cls_Devoir[] l_Devoirs = {Devoir1, Devoir2, Devoir3, Devoir4, Devoir5, Devoir6};
+                cls_Devoir[] l_DevoirsSemestre1 = {Devoir1, Devoir2, Devoir3, Devoir4, Devoir5, Devoir6};
 
-                foreach (cls_Devoir l_Devoir in l_Devoirs)
+                // Premier semestre
+                foreach (cls_Devoir l_Devoir in l_DevoirsSemestre1)
                 {
                     double noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
                     cls_Note Note = new cls_Note(noteAleatoire, MonEleve, l_Devoir, l_Semestre1);
+                }
+
+                cls_Devoir[] l_DevoirsSemestre2 = { Devoir7, Devoir8, Devoir9, Devoir10, Devoir11, Devoir12 };
+
+                foreach (cls_Devoir l_Devoir in l_DevoirsSemestre2)
+                {
+                    double noteAleatoire = Math.Round(rnd.NextDouble() * 20.0, 2);
+                    cls_Note Note = new cls_Note(noteAleatoire, MonEleve, l_Devoir, l_Semestre2);
                 }
 
                 // Appréciations aléatoires
@@ -99,7 +116,7 @@ namespace Notes
                 Utilitaires.Separateur();
             }
 
-            // Génère et ouvre un PDF
+            // Génère et ouvre un PDF pour le premier semestre
             cls_Pdf pdf = new cls_Pdf(SLAM, l_Semestre1);
 
             Console.ReadLine();
