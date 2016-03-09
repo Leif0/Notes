@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    public class cls_Devoir
+    public class cls_Devoir : cls_ObjetBase
     {
         private string c_Libelle;
         private DateTime c_DateDevoir;
@@ -19,7 +19,7 @@ namespace Notes
         /// <param name="pLibelle">Libellé du devoir</param>
         /// <param name="pDateDevoir">Date à laquelle le devoir a eu lieu</param>
         /// <param name="pMatiere">Matière concerné par ce devoir</param>
-        public cls_Devoir(string pLibelle, DateTime pDateDevoir, cls_Matiere pMatiere)
+        public cls_Devoir(string pLibelle, DateTime pDateDevoir, cls_Matiere pMatiere, int pId):base(pId)
         {
             c_Libelle = pLibelle;
             c_DateDevoir = pDateDevoir;

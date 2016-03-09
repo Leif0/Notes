@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    public class cls_Eleve
+    public class cls_Eleve : cls_ObjetBase
     {
         private string c_Nom;
         private string c_Prenom;
@@ -25,7 +25,7 @@ namespace Notes
         /// <param name="pDateNaissance">Date de naissance de l'élève</param>
         /// <param name="pGroupe">Groupe à lequel l'élève appartient</param>
         /// <param name="pAdresse">L'adresse postale de l'élève</param>
-        public cls_Eleve(string pNom, string pPrenom, DateTime pDateNaissance, cls_Groupe pGroupe, string pAdresse)
+        public cls_Eleve(string pNom, string pPrenom, DateTime pDateNaissance, cls_Groupe pGroupe, string pAdresse, int pId):base(pId)
         {
             setNom(pNom);
             setPrenom(pPrenom);

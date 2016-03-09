@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    public class cls_Groupe
+    public class cls_Groupe : cls_ObjetBase
     {
         private string c_Libelle;
         private List<cls_Eleve> c_ListeEleve;
@@ -16,7 +16,7 @@ namespace Notes
         /// Créer un nouveau groupe
         /// </summary>
         /// <param name="pLibelle">Le libellé du groupe</param>
-        public cls_Groupe(string pLibelle)
+        public cls_Groupe(string pLibelle, int pId):base(pId)
         {
             setLibelle(pLibelle);
             c_ListeEleve = new List<cls_Eleve>();

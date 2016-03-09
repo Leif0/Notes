@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    public class cls_Matiere
+    public class cls_Matiere : cls_ObjetBase
     {
         private string c_Libelle;
         private cls_Groupe c_Groupe;
@@ -21,7 +21,7 @@ namespace Notes
         /// <param name="pGroupe">Groupe de la matière</param>
         /// <param name="pCoefficient">Coefficient de la matière</param>
         /// <param name="pProfesseur">Professeur qui enseigne cette matière</param>
-        public cls_Matiere(string pLibelle, cls_Groupe pGroupe, int pCoefficient, string pProfesseur)
+        public cls_Matiere(string pLibelle, cls_Groupe pGroupe, int pCoefficient, string pProfesseur, int pId):base(pId)
         {
             c_Libelle = pLibelle;
             c_Groupe = pGroupe;

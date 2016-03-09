@@ -37,6 +37,10 @@
       <HintPath>..\packages\Faker.1.2\lib\Faker.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.3.0.5\lib\net45\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
       <Private>True</Private>
@@ -57,12 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="cls_Appreciation.cs" />
+    <Compile Include="cls_Base.cs" />
     <Compile Include="cls_Devoir.cs" />
     <Compile Include="cls_Eleve.cs" />
     <Compile Include="cls_Groupe.cs" />
     <Compile Include="cls_Matiere.cs" />
-    <Compile Include="cls_MatiereGroupe.cs" />
     <Compile Include="cls_Note.cs" />
+    <Compile Include="cls_ObjetBase.cs" />
     <Compile Include="cls_Pdf.cs" />
     <Compile Include="cls_Semestre.cs" />
     <Compile Include="Program.cs" />
