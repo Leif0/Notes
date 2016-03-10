@@ -9,6 +9,7 @@ namespace Notes
     class Utilitaires
     {
         private static System.Timers.Timer c_Timer;
+        private static Random rnd;
 
         public enum alignement
         {
