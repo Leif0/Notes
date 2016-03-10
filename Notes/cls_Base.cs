@@ -78,12 +78,12 @@ namespace Notes
         /// Créer une liste de tous les élèves
         /// </summary>
         /// <returns>Liste de cls_Eleve</returns>
-        public List<cls_Eleve> CreerEleves()
+        public List<cls_Eleve> CreerEleves(cls_Groupe pGroupe)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT eleve.id, nom, prenom, date_naissance, groupe.libelle, groupe.id as id_groupe FROM eleve, groupe WHERE eleve.id_groupe = groupe.id";
+                cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve";
 
                 List<cls_Eleve> l_Eleves = new List<cls_Eleve>();
 
@@ -95,11 +95,9 @@ namespace Notes
                         string l_Nom = l_Reader.GetString(1);
                         string l_Prenom = l_Reader.GetString(2);
                         DateTime l_DateNaissance = l_Reader.GetDateTime(3);
-                        string l_LibelleGroupe = l_Reader.GetString(4);
-                        int l_IdGroupe = l_Reader.GetInt32(5);
-                        cls_Groupe l_Groupe = new cls_Groupe(l_LibelleGroupe, l_IdGroupe);
+                        string l_Adresse = l_Reader.GetString(4);
 
-                        cls_Eleve l_Eleve = new cls_Eleve(l_Nom, l_Prenom, l_DateNaissance, l_Groupe, "5 rue test", l_Id);
+                        cls_Eleve l_Eleve = new cls_Eleve(l_Nom, l_Prenom, l_DateNaissance, pGroupe, l_Adresse, l_Id);
                         l_Eleves.Add(l_Eleve);
                     }
                 }
@@ -111,7 +109,7 @@ namespace Notes
         /// Créer une liste de toutes les matières
         /// </summary>
         /// <returns>Liste de cls_Matiere</returns>
-        public List<cls_Matiere> CreerMatieres()
+        public List<cls_Matiere> CreerMatieres(cls_Groupe pGroupe)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
@@ -130,9 +128,8 @@ namespace Notes
                         string l_LibelleGroupe = l_Reader.GetString(3);
                         int l_CoefficientMatiere = l_Reader.GetInt32(4);
                         string l_ProfesseurMatiere = l_Reader.GetString(5);
-                        
-                        cls_Groupe l_Groupe = new cls_Groupe(l_LibelleGroupe, l_IdGroupe);
-                        cls_Matiere l_Matiere = new cls_Matiere(l_Libelle, l_Groupe, l_CoefficientMatiere, l_ProfesseurMatiere, l_IdMatiere);
+
+                        cls_Matiere l_Matiere = new cls_Matiere(l_Libelle, pGroupe, l_CoefficientMatiere, l_ProfesseurMatiere, l_IdMatiere);
                         l_Matieres.Add(l_Matiere);
                     }
                 }
@@ -177,8 +174,6 @@ namespace Notes
                         DateTime l_DateDevoir = l_Reader.GetDateTime(2);
                         string l_LibelleMatiere = l_Reader.GetString(3);
 
-                        //cls_Matiere l_Matiere = new cls_Matiere(l_LibelleMatiere, pGroupe, 2, "Bob",);
-
                         cls_Devoir l_Devoir = new cls_Devoir(l_LibelleDevoir, l_DateDevoir, pMatiere, l_IdDevoir);
 
                         l_Devoirs.Add(l_Devoir);
@@ -187,15 +182,56 @@ namespace Notes
                 return l_Devoirs;
             }
         }
+        
+        public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, List<cls_Eleve> pEleves, cls_Semestre pSemestre)
+        {
+            List<cls_Note> l_Notes = new List<cls_Note>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = c_Conn;
+                cmd.CommandText = "SELECT id_devoir, id_eleve, note FROM noter";
 
-        /* public void DetruitObjet()
+                using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
+                {
+                    while (l_Reader.Read())
+                    {
+                        int l_IdDevoir = l_Reader.GetInt32(0);
+                        int l_IdEleve = l_Reader.GetInt32(1);
+
+                        cls_Devoir l_Devoir = pDevoirs.Find(
+                            delegate(cls_Devoir devoir)
+                            {
+                                return devoir.getId() == l_IdDevoir;
+                            }
+                        );
+
+                        cls_Eleve l_Eleve = pEleves.Find(
+                            delegate (cls_Eleve eleve)
+                            {
+                                return eleve.getId() == l_IdEleve;
+                            }
+                        );
+
+                        double l_NoteValeur = l_Reader.GetDouble(2);
+                        cls_Note l_Note = new cls_Note(l_NoteValeur, l_Eleve, l_Devoir, pSemestre);
+                        l_Notes.Add(l_Note);
+                    }
+                }
+            }
+            return l_Notes;
+        }
+
+        public void DetruitObjet()
          {
              if (c_Conn != null)
              {
                  c_Conn.Dispose();
                  c_Conn = null;
              }
-         }*/
+         }
+
+
+
         /*
         public cls_Groupe CreerGroupe(string pLibelle)
         {

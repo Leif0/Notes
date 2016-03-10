@@ -92,12 +92,20 @@ namespace Notes
         public double MoyenneGroupePourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
         {
             double cumul = 0;
+            int nombreEleveSansMoyenne = 0;
 
             foreach (cls_Eleve eleve in c_ListeEleve)
             {
-                cumul += eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
+                if (eleve.MoyenneMatiereSemestre(pMatiere, pSemestre) != -1)
+                {
+                    cumul += eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
+                }
+                else
+                {
+                    nombreEleveSansMoyenne++;
+                }
             }
-            return cumul / c_ListeEleve.Count;
+            return cumul / (c_ListeEleve.Count - nombreEleveSansMoyenne);
         }
 
         public double getMoyenneMinimumPourMatiereSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
@@ -108,9 +116,12 @@ namespace Notes
             {
                 double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
 
-                if (l_MoyenneEleve < l_MoyenneMinimum)
+                if (l_MoyenneEleve != -1)
                 {
-                    l_MoyenneMinimum = l_MoyenneEleve;
+                    if (l_MoyenneEleve < l_MoyenneMinimum)
+                    {
+                        l_MoyenneMinimum = l_MoyenneEleve;
+                    }
                 }
             }
             return l_MoyenneMinimum;
@@ -124,9 +135,12 @@ namespace Notes
             {
                 double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(pMatiere, pSemestre);
 
-                if (l_MoyenneEleve > l_MoyenneMaximum)
+                if (l_MoyenneEleve != -1)
                 {
-                    l_MoyenneMaximum = l_MoyenneEleve;
+                    if (l_MoyenneEleve > l_MoyenneMaximum)
+                    {
+                        l_MoyenneMaximum = l_MoyenneEleve;
+                    }
                 }
             }
             return l_MoyenneMaximum;

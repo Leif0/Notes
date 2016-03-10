@@ -245,16 +245,45 @@ namespace Notes
             double cumul = 0;
             int totalNotes = 0;
 
+            // Nombre de notes dans cette matière
+            int nombreNotesMatiere = 0;
             for (int i = 0; i < c_Notes.Count; i++)
             {
-                if (c_Notes[i].getDevoir().getMatiere() == pMatiere && 
-                   pSemestre == c_Notes[i].getSemestre() )
+                if (c_Notes[i].getDevoir().getMatiere() == pMatiere)
                 {
-                    cumul += c_Notes[i].getValeur();
-                    totalNotes++;
+                    nombreNotesMatiere++;
                 }
             }
-            return cumul / totalNotes;
+
+            // Si il y a moins de deux notes on retourne l'unique note de la matière
+
+            if (nombreNotesMatiere < 2)
+            {
+                for (int i = 0; i < c_Notes.Count; i++)
+                {
+                    if (c_Notes[i].getDevoir().getMatiere() == pMatiere)
+                    {
+                        return c_Notes[i].getValeur();
+                    }
+                }
+            }
+            else
+            {
+                // Sinon on retourne la moyenne des notes
+
+                for (int i = 0; i < c_Notes.Count; i++)
+                {
+                    if (c_Notes[i].getDevoir().getMatiere() == pMatiere/* && 
+                   pSemestre == c_Notes[i].getSemestre() */)
+                    {
+                        cumul += c_Notes[i].getValeur();
+                        totalNotes++;
+                    }
+                }
+                return cumul / totalNotes;
+            }
+            // Retourne -1 si il n'y a pas de moyenne pour cette matière (aucune note)
+            return -1;
         }
 
         /// <summary>

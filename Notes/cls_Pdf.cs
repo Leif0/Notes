@@ -57,7 +57,7 @@ namespace Notes
         private XPoint c_ColonneMatiere;
         private XPoint c_ColonneMoyenneEleve;
         private XPoint c_ColonneMoyenneGroupe;
-        private XPoint c_ColonneAppreciation;
+        //private XPoint c_ColonneAppreciation;
         private XPoint c_ColonneMoyenneMin;
         private XPoint c_ColonneMoyenneMax;
 
@@ -69,6 +69,7 @@ namespace Notes
         private int     c_DerniereLigneTop;
 
         private string c_NomEtablissement;
+        private Random rnd;
 
         /// <summary>
         /// Créer tous les bulletins PDF de tous les élèves du groupe pour le semestre choisi. 
@@ -80,6 +81,25 @@ namespace Notes
             // Génère les pdfs pour tous les élèves de ce groupe
             c_Groupe = pGroupe;
             c_Semestre = pSemestre;
+
+            // Pour chaque élève, on modifie les variables, on dessine le PDF, puis on le sauvegarde
+            foreach (cls_Eleve l_eleve in c_Groupe.getListeEleve())
+            {
+                c_Eleve = l_eleve;
+                CreerPdf();
+            }
+        }
+
+        /// <summary>
+        /// Créer tous les bulletins PDF de tous les élèves du groupe pour le semestre choisi. 
+        /// Le PDF est crée au moment de l'initialisation.
+        /// </summary>
+        /// <param name="pGroupe">Groupe</param>
+        public cls_Pdf(cls_Groupe pGroupe)
+        {
+            // Génère les pdfs pour tous les élèves de ce groupe
+            c_Groupe = pGroupe;
+            c_Semestre = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
 
             // Pour chaque élève, on modifie les variables, on dessine le PDF, puis on le sauvegarde
             foreach (cls_Eleve l_eleve in c_Groupe.getListeEleve())
@@ -193,6 +213,7 @@ namespace Notes
         /// </summary>
         private void InitialiserVariables()
         {
+            rnd = new Random();
             // Position de début du tableau par rapport au haut de la page
             c_DebutTableau = 250;
             c_HauteurLigne = 50;
@@ -215,7 +236,7 @@ namespace Notes
             c_PositionLogo             = new XPoint(40, 60);
             c_PositionRectangleAdresse = new XRect(c_Page.Width - 300, c_PositionTitre.Top + 40, 250, 100);
             c_PositionTexteAdresse     = new XRect(c_PositionRectangleAdresse.Left + 20,
-                                                  c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width, 0);
+                                                  c_PositionRectangleAdresse.Top + 20, c_PositionRectangleAdresse.Width - 100, c_PositionRectangleAdresse.Height);
 
             c_ColonneMatiere        = new XPoint(170, c_DebutTableau + 50);
             c_ColonneMoyenneEleve   = new XPoint(c_ColonneMatiere.X + 45, c_DebutTableau + 50);
@@ -270,7 +291,7 @@ namespace Notes
             c_Gfx.DrawRoundedRectangle(c_Pen, c_PositionRectangleAdresse, size);
 
             // Texte adresse
-            string adresseComplete = "M. " + c_Eleve.getNom() + " " + c_Eleve.getPrenom() + "\n" + c_Eleve.getAdresse();
+            string adresseComplete = "M. " + c_Eleve.getNom() + " " + c_Eleve.getPrenom() + "\n\n" + c_Eleve.getAdresse();
 
             c_tf.DrawString(adresseComplete, c_FontNormal, c_Brush, c_PositionTexteAdresse, XStringFormats.TopLeft);
         }
@@ -328,8 +349,16 @@ namespace Notes
                 double l_moyenne;
                 l_moyenne = c_Eleve.MoyenneMatiereSemestre(matiere, c_Semestre);
 
-                c_Gfx.DrawString(Math.Round(l_moyenne, 2).ToString(), c_FontSmallBold, c_Brush,
-                    new XPoint(175, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+                if (l_moyenne == -1)
+                {
+                    c_Gfx.DrawString("-", c_FontSmallBold, c_Brush,
+                        new XPoint(175, c_DebutTableau + c_NumMatiere*c_HauteurLigne + 30));
+                }
+                else
+                {
+                    c_Gfx.DrawString(Math.Round(l_moyenne, 2).ToString(), c_FontSmallBold, c_Brush,
+                        new XPoint(175, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
+                }
 
                 // Moyenne groupe
                 double moyenneGroupe = c_Groupe.MoyenneGroupePourMatiereSemestre(matiere, c_Semestre);
@@ -346,8 +375,9 @@ namespace Notes
                 c_Gfx.DrawString(Math.Round(l_MoyenneMaximumMatiere, 2).ToString(), c_FontSmall, c_Brush,
                     new XPoint(295, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 30));
 
-                // Appreciation pour cette matière
-                string l_Appreciation = c_Eleve.getAppreciationSemestre(matiere, c_Semestre).getTexte();
+                // Appreciation pour cette matière (en dur)
+
+                /*string l_Appreciation = c_Eleve.getAppreciationSemestre(matiere, c_Semestre).getTexte();
 
                 int l_LongueurMaxAppreciation = 100;
 
@@ -355,6 +385,9 @@ namespace Notes
                 {
                     l_Appreciation = l_Appreciation.Substring(0, l_LongueurMaxAppreciation);
                 }
+                */
+
+                string l_Appreciation = Faker.TextFaker.Sentence();
 
                 XRect l_PositionAppreciation = new XRect(340, c_DebutTableau + c_NumMatiere * c_HauteurLigne
                     + 10, 200, c_HauteurLigne + 10);
@@ -416,7 +449,7 @@ namespace Notes
         public void SauvegarderEtOuvrirPdf()
         {
             // Sauvegarde le PDF
-            string filename = "Bulletin" + c_Eleve.getNom() + c_Eleve.getPrenom() + ".pdf";
+            string filename = "Bulletin" + c_Eleve.getNom() + c_Eleve.getPrenom() + rnd.Next(999999) + ".pdf";
             c_Bulletin.Save(filename);
 
             // Ouvre le fichier
