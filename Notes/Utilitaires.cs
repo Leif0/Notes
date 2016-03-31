@@ -110,6 +110,7 @@ namespace Notes
             };
             c_Timer.AutoReset = true;
             c_Timer.Enabled = true;
+            Console.ResetColor();
         }
     }
 }
