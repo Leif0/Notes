@@ -83,7 +83,7 @@ namespace Notes
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve";
+                cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve WHERE id_groupe = " + pGroupe.getId();
 
                 List<cls_Eleve> l_Eleves = new List<cls_Eleve>();
 
@@ -114,7 +114,7 @@ namespace Notes
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT matiere.id, matiere.libelle, groupe.id as id_groupe, groupe.libelle as libelle_groupe, matiere.coefficient, matiere.professeur  FROM matiere, groupe WHERE matiere.id_groupe = groupe.id";
+                cmd.CommandText = "SELECT matiere.id, matiere.libelle, groupe.id as id_groupe, groupe.libelle as libelle_groupe, matiere.coefficient, matiere.professeur  FROM matiere, groupe WHERE matiere.id_groupe = groupe.id AND id_groupe = " + pGroupe.getId();
 
                 List<cls_Matiere> l_Matieres = new List<cls_Matiere>();
 
@@ -186,10 +186,26 @@ namespace Notes
         public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, List<cls_Eleve> pEleves, cls_Semestre pSemestre)
         {
             List<cls_Note> l_Notes = new List<cls_Note>();
+
+            int[] l_IdDevoirs = new int[pDevoirs.Count];
+
+            string l_IdDevoirsString = "(";
+
+            for (int i = 0; i < pDevoirs.Count; i++)
+            {
+                l_IdDevoirsString += pDevoirs[i].getId();
+                if (i != pDevoirs.Count-1)
+                {
+                    l_IdDevoirsString += ", ";
+                }
+            }
+        
+            l_IdDevoirsString += ")";
+
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT id_devoir, id_eleve, note FROM noter";
+                cmd.CommandText = "SELECT id_devoir, id_eleve, note FROM noter WHERE id_devoir IN " + l_IdDevoirsString;
 
                 using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
                 {

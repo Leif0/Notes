@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C2CD8F1C-B1FE-4EE1-A01F-22B3D1D46BBF}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{A4DAA706-880C-4333-8A1C-741557DF32AC}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Notes</RootNamespace>
-    <AssemblyName>Notes</AssemblyName>
+    <RootNamespace>dll_Notes</RootNamespace>
+    <AssemblyName>dll_Notes</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -60,19 +57,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="cls_Appreciation.cs" />
+    <Compile Include="cls_Base.cs" />
+    <Compile Include="cls_Devoir.cs" />
+    <Compile Include="cls_Eleve.cs" />
+    <Compile Include="cls_Groupe.cs" />
+    <Compile Include="cls_Matiere.cs" />
+    <Compile Include="cls_Note.cs" />
+    <Compile Include="cls_ObjetBase.cs" />
+    <Compile Include="cls_Pdf.cs" />
+    <Compile Include="cls_Semestre.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilitaires.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\dll_Notes\dll_Notes.csproj">
-      <Project>{a4daa706-880c-4333-8a1c-741557df32ac}</Project>
-      <Name>dll_Notes</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

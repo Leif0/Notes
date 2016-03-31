@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    class Utilitaires
+    public class Utilitaires
     {
         private static System.Timers.Timer c_Timer;
         private static Random rnd;
@@ -110,7 +110,6 @@ namespace Notes
             };
             c_Timer.AutoReset = true;
             c_Timer.Enabled = true;
-            Console.ResetColor();
         }
     }
 }

@@ -71,6 +71,8 @@ namespace Notes
         private string c_NomEtablissement;
         private Random rnd;
 
+        private string c_Filename;
+
         /// <summary>
         /// Créer tous les bulletins PDF de tous les élèves du groupe pour le semestre choisi. 
         /// Le PDF est crée au moment de l'initialisation.
@@ -451,9 +453,12 @@ namespace Notes
             // Sauvegarde le PDF
             string filename = "Bulletin" + c_Eleve.getNom() + c_Eleve.getPrenom() + rnd.Next(999999) + ".pdf";
             c_Bulletin.Save(filename);
+            c_Filename = filename;
+        }
 
-            // Ouvre le fichier
-            Process.Start(filename);
+        public string getFilename()
+        {
+            return c_Filename;
         }
     }
 }

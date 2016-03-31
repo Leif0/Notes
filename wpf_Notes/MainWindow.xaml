@@ -1,0 +1,41 @@
+﻿<Window x:Class="wpf_Notes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:wpf_Notes"
+        mc:Ignorable="d"
+        Title="Générateur de bulletin" Height="288" Width="423" Loaded="Window_Loaded" Foreground="White" ResizeMode="NoResize">
+    <Window.Resources>
+        <Color x:Key="MainColor">#FFE84545</Color>
+        <Color x:Key="BgColor">#FF222831</Color>
+        <Color x:Key="Grey">#FF393E46</Color>
+    </Window.Resources>
+    <Window.Effect>
+        <DropShadowEffect Opacity="0.8"/>
+    </Window.Effect>
+    <Grid x:Name="grid" Margin="0,0,0,-19">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <SolidColorBrush Color="{DynamicResource BgColor}"/>
+        </Grid.Background>
+
+        <Label x:Name="lbl_GenerateurBulletin" Content="Choisissez un groupe et cliquez sur Générer un bulletin." HorizontalAlignment="Center" VerticalAlignment="Top" Margin="52,10,63,0" Width="302" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="27" Foreground="White"/>
+        <ComboBox x:Name="cbx_ChoixGroupe" HorizontalAlignment="Center" VerticalAlignment="Center" Width="146" Margin="198,116,73,136" Height="26" Loaded="comboBox_Loaded" SelectionChanged="cbx_ChoixGroupe_SelectionChanged"/>
+        <Label x:Name="lbl_Groupe" Content="Groupe" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="284,72,83,0" Background="{x:Null}" Width="50" Height="26">
+            <Label.Foreground>
+                <SolidColorBrush Color="White"/>
+            </Label.Foreground>
+        </Label>
+        <Button x:Name="btn_OuvrirDossier" Content="Ouvrir dossier PDF" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="58" Click="btn_OuvrirDossier_Click" Margin="0,0,8,10" Width="180" BorderBrush="{x:Null}" Foreground="White">
+            <Button.Background>
+                <SolidColorBrush Color="{DynamicResource Grey}"/>
+            </Button.Background>
+        </Button>
+        <Button x:Name="btn_GenererBulletins" Content="Générer les bulletins" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="58" Click="btn_GenererBulletins_Click" Margin="5,0,0,10" Width="180" BorderBrush="{x:Null}" Foreground="White"/>
+
+    </Grid>
+</Window>
