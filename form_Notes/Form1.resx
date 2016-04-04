@@ -117,6 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btn_OuvrirDossier.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAB3RJ
+        TUUH4AMfDiYz49pDAwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEtSURBVEhL
+        tZQ9TsNAEIUXOkokCs4ADS1K/CMK7gCn4AQoXQoiYG0CVIC8GwoqGiSkHAE6urS5QHyC5Y0LxzETCcRz
+        8UnrefI32l17TAihU9Qik3rRv51sJ5k/jzN3X2PddWqLfvOFv1Iv4txdQBrW8JGOH3ebL/6WehFlfqqI
+        m5TY0TjKfS+9mhysA549Mxhs/mgAwawl/A9fh5cvW60G/hW8s5CdrDToClyuP42tv8O2ll8PA3HCLWdf
+        Au0cGZTSYN4qMpmbJHOfSkBB3PKDvWkhBbhNZN2DGhIQt4ltMdRCCnDLiDhTQwLilks+0UIG4sYlF0da
+        SAFu07t52ldDAuI26eh5RwsZiFum3QYeFu2QwELc1cTDeD1GIa8GFANxwVlN0+Zo7QK1yCOYb6TbpEl0
+        4mPxAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="saveFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>28, 26</value>
   </metadata>
@@ -125,5 +139,20 @@
   </metadata>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>304, 26</value>
+  </metadata>
+  <metadata name="col_Id.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="col_Nom.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="col_Prenom.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="clsEleveBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>401, 26</value>
+  </metadata>
+  <metadata name="clsEleveBindingSource1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>573, 26</value>
   </metadata>
 </root>

@@ -83,7 +83,7 @@ namespace Notes
         /// </summary>
         /// <param name="pTexte">Texte à afficher</param>
         /// <param name="pGroupe">Groupe pour lequel générer les pdf</param>
-        public static void EcrireTimerEtCreerPdf(string pTexte, cls_Groupe pGroupe)
+        public static void EcrireTimerEtCreerPdf(string pTexte, cls_Groupe pGroupe, string pPath)
         {
             Console.Write("\n");
             Console.Write(new string(' ', (Console.WindowWidth - pTexte.Length) / 2));
@@ -105,7 +105,7 @@ namespace Notes
                     Console.Write("\n");
                     // Génère le pdf et l'ouvre directement
 
-                    cls_Pdf pdf = new cls_Pdf(pGroupe);
+                    cls_Pdf pdf = new cls_Pdf(pGroupe, pPath);
                 }
             };
             c_Timer.AutoReset = true;

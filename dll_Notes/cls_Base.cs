@@ -50,14 +50,14 @@ namespace Notes
         /// Créer une liste de tous les groupes
         /// </summary>
         /// <returns>Liste de cls_Groupe</returns>
-        public List<cls_Groupe> CreerGroupes()
+        public Dictionary<int, cls_Groupe> CreerGroupes()
         {
+            Dictionary <int, cls_Groupe> l_Groupes = new Dictionary<int, cls_Groupe>();
+
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
                 cmd.CommandText = "SELECT id, libelle FROM groupe";
-
-                List<cls_Groupe> l_Groupes = new List<cls_Groupe>();
 
                 using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
                 {
@@ -67,25 +67,25 @@ namespace Notes
                         string l_Libelle = l_Reader.GetString(1);
 
                         cls_Groupe l_Groupe = new cls_Groupe(l_Libelle, l_Id);
-                        l_Groupes.Add(l_Groupe);
+                        l_Groupes.Add(l_Id, l_Groupe);
                     }
                 }
-                return l_Groupes;
             }
+            return l_Groupes;
         }
 
         /// <summary>
         /// Créer une liste de tous les élèves
         /// </summary>
         /// <returns>Liste de cls_Eleve</returns>
-        public List<cls_Eleve> CreerEleves(cls_Groupe pGroupe)
+        public Dictionary<int, cls_Eleve> CreerEleves(cls_Groupe pGroupe)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
                 cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve WHERE id_groupe = " + pGroupe.getId();
 
-                List<cls_Eleve> l_Eleves = new List<cls_Eleve>();
+                Dictionary<int, cls_Eleve> l_Eleves = new Dictionary<int, cls_Eleve>();
 
                 using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
                 {
@@ -98,7 +98,7 @@ namespace Notes
                         string l_Adresse = l_Reader.GetString(4);
 
                         cls_Eleve l_Eleve = new cls_Eleve(l_Nom, l_Prenom, l_DateNaissance, pGroupe, l_Adresse, l_Id);
-                        l_Eleves.Add(l_Eleve);
+                        l_Eleves.Add(l_Id, l_Eleve);
                     }
                 }
                 return l_Eleves;
@@ -183,7 +183,7 @@ namespace Notes
             }
         }
         
-        public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, List<cls_Eleve> pEleves, cls_Semestre pSemestre)
+        public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, Dictionary<int, cls_Eleve> pEleves, cls_Semestre pSemestre)
         {
             List<cls_Note> l_Notes = new List<cls_Note>();
 
@@ -221,12 +221,7 @@ namespace Notes
                             }
                         );
 
-                        cls_Eleve l_Eleve = pEleves.Find(
-                            delegate (cls_Eleve eleve)
-                            {
-                                return eleve.getId() == l_IdEleve;
-                            }
-                        );
+                        cls_Eleve l_Eleve = pEleves[l_IdEleve];
 
                         double l_NoteValeur = l_Reader.GetDouble(2);
                         cls_Note l_Note = new cls_Note(l_NoteValeur, l_Eleve, l_Devoir, pSemestre);
@@ -237,6 +232,24 @@ namespace Notes
             return l_Notes;
         }
 
+        public void ModifierEleve(cls_Eleve pEleve)
+        {
+            NpgsqlCommand cmd =
+                new NpgsqlCommand("UPDATE eleve SET \"prenom\" = :Prenom, \"nom\" = :Nom, \"date_naissance\" = :DateNaissance WHERE \"id\" = " +
+                                    pEleve.getId() + ";");
+            cmd.Parameters.Add(new NpgsqlParameter("Prenom", NpgsqlDbType.Text));
+            cmd.Parameters.Add(new NpgsqlParameter("Nom", NpgsqlDbType.Text));
+            cmd.Parameters.Add(new NpgsqlParameter("DateNaissance", NpgsqlDbType.Date));
+
+            cmd.Connection = c_Conn;
+
+            cmd.Parameters[0].Value = pEleve.getPrenom();
+            cmd.Parameters[1].Value = pEleve.getNom();
+            cmd.Parameters[2].Value = pEleve.getDateNaissance();
+
+            cmd.ExecuteNonQuery();
+        }
+
         public void DetruitObjet()
          {
              if (c_Conn != null)
@@ -245,28 +258,5 @@ namespace Notes
                  c_Conn = null;
              }
          }
-
-
-
-        /*
-        public cls_Groupe CreerGroupe(string pLibelle)
-        {
-            using (NpgsqlCommand cmd = new NpgsqlCommand())
-            {
-                cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT id, libelle FROM groupe WHERE libelle='" + pLibelle + "'";
-                cls_Groupe l_Groupe;
-
-                using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
-                {
-                    l_Reader.Read();
-                    int l_Id = l_Reader.GetInt32(0);
-                    string l_Libelle = l_Reader.GetString(1);
-                    l_Groupe = new cls_Groupe(l_Libelle, l_Id);
-                    return l_Groupe;
-                }
-
-            }
-        }*/
     }
 }

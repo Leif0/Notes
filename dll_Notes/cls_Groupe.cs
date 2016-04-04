@@ -197,6 +197,15 @@ namespace Notes
             }
             return l_MoyenneMaximum;
         }
-    }
 
+        public List<cls_Matiere> getListeMatiere()
+        {
+            return c_Matieres;
+        } 
+
+        public override string ToString()
+        {
+            return this.c_Libelle;
+        }
+    }
 }

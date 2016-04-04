@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using dll_Notes;
 
 namespace Notes
 {
@@ -9,25 +10,27 @@ namespace Notes
         static void Main(string[] args)
         {
             // Créer l'objet base de donnée et les groupes
-            cls_Base l_Base = new cls_Base("localhost", "postgres", "123456", "notes");
+            cls_Base l_Controleur = new cls_Base("localhost", "postgres", "123456", "notes");
+
+            cls_Modele l_Modele = new cls_Modele();
 
             // Créer les groupes
-            List<cls_Groupe> l_Groupes = l_Base.CreerGroupes();
+            l_Modele.ListeGroupes = l_Controleur.CreerGroupes();
 
             // Un seul semestre en dur
             cls_Semestre l_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
 
             // Créer les élèves
-            List<cls_Eleve> l_Eleves = l_Base.CreerEleves(l_Groupes[0]);
+            Dictionary<int, cls_Eleve> l_Eleves = l_Controleur.CreerEleves(l_Modele.ListeGroupes[0]);
 
             // Créer les matières
-            List<cls_Matiere> l_Matieres = l_Base.CreerMatieres(l_Groupes[0]);
+            List<cls_Matiere> l_Matieres = l_Controleur.CreerMatieres(l_Modele.ListeGroupes[0]);
 
             // Créer les devoirs
-            List<cls_Devoir> l_Devoirs = l_Base.CreerDevoirs(l_Matieres);
+            List<cls_Devoir> l_Devoirs = l_Controleur.CreerDevoirs(l_Matieres);
             
             // Créer les notes
-            List<cls_Note> l_Notes = l_Base.CreerNotes(l_Devoirs, l_Eleves, l_Semestre1);
+            List<cls_Note> l_Notes = l_Controleur.CreerNotes(l_Devoirs, l_Eleves, l_Semestre1);
 
 
             /********************
@@ -42,7 +45,7 @@ namespace Notes
                                    Utilitaires.alignement.Centrer, 
                                    Utilitaires.espacement.AvantEtApres);
 
-            foreach (cls_Eleve l_Eleve in l_Eleves)
+            foreach (cls_Eleve l_Eleve in l_Eleves.Values)
             {
                 Console.WriteLine(l_Eleve.getPrenom() + " est dans le groupe " + l_Eleve.getGroupe().getLibelle());
             }
@@ -88,7 +91,7 @@ namespace Notes
 
             // Génération des fichiers pdfs
 
-            Utilitaires.EcrireTimerEtCreerPdf("Génération des fichiers PDF et ouverture...", l_Groupes[0]);
+            //Utilitaires.EcrireTimerEtCreerPdf("Génération des fichiers PDF et ouverture...", l_Modele.ListeGroupes[0]);
 
             Console.ReadLine();
         }

@@ -122,6 +122,14 @@ namespace Notes
         {
             c_DateNaissance = pDate;
         }
+        /// <summary>
+        /// Modifie la date de naissance de l'élève
+        /// </summary>
+        /// <param name="pDate">Date de naissance de l'élève</param>
+        public void setDateNaissance(string pDate)
+        {
+            c_DateNaissance = Convert.ToDateTime(pDate);
+        }
 
         /// <summary>
         /// Retourne l'âge de l'élève
@@ -352,6 +360,11 @@ namespace Notes
             {
                 throw new Exception("Aucune appréciation pour ce semestre et cette matière");
             }
+        }
+
+        public override string ToString()
+        {
+            return this.c_Nom + " " + this.c_Prenom;
         }
     }
 }

@@ -71,6 +71,7 @@ namespace Notes
         private string c_NomEtablissement;
         private Random rnd;
 
+        private string c_Path;
         private string c_Filename;
 
         /// <summary>
@@ -97,8 +98,9 @@ namespace Notes
         /// Le PDF est crée au moment de l'initialisation.
         /// </summary>
         /// <param name="pGroupe">Groupe</param>
-        public cls_Pdf(cls_Groupe pGroupe)
+        public cls_Pdf(cls_Groupe pGroupe, string pPath)
         {
+            c_Path = pPath;
             // Génère les pdfs pour tous les élèves de ce groupe
             c_Groupe = pGroupe;
             c_Semestre = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
@@ -117,8 +119,11 @@ namespace Notes
         /// </summary>
         /// <param name="pEleve">L'élève pour lequel on doit générer le bulletin</param>
         /// <param name="pSemestre">Le semestre</param>
-        public cls_Pdf(cls_Eleve pEleve, cls_Semestre pSemestre)
+        public cls_Pdf(cls_Eleve pEleve, cls_Semestre pSemestre, string pPath)
         {
+            c_Path = pPath;
+            c_Groupe = pEleve.getGroupe();
+
             // Génère les pdfs pour tous les élèves de ce groupe
             c_Semestre = pSemestre;
 
@@ -325,7 +330,7 @@ namespace Notes
         {
             // Lignes du tableau
 
-            foreach (cls_Matiere matiere in c_Groupe.getMatiere())
+            foreach (cls_Matiere matiere in c_Eleve.getGroupe().getListeMatiere())
             {
                 c_NumMatiere++;
 
@@ -452,7 +457,7 @@ namespace Notes
         {
             // Sauvegarde le PDF
             string filename = "Bulletin" + c_Eleve.getNom() + c_Eleve.getPrenom() + rnd.Next(999999) + ".pdf";
-            c_Bulletin.Save(filename);
+            c_Bulletin.Save(c_Path + "\\" + filename);
             c_Filename = filename;
         }
 
