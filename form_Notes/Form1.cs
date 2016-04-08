@@ -19,9 +19,18 @@ namespace form_Notes
 
         public cls_Modele c_Modele;
         public cls_Base c_Controleur;
-
         // Un seul semestre en dur
         private cls_Semestre c_Semestre1;
+
+        /// <summary>
+        /// Différents types de logs
+        /// </summary>
+        private enum TypeLog
+        {
+            ModificationEleve,
+            AjoutEleve,
+            SuppressionEleve
+        }
 
         public Form1()
         {
@@ -43,12 +52,11 @@ namespace form_Notes
             
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            
-        }
-
-
+        /// <summary>
+        /// Ouvre l'emplacement de sauvegarde des PDFs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_OuvrirDossier_Click_1(object sender, EventArgs e)
         {
             if (c_Path != null)
@@ -71,6 +79,11 @@ namespace form_Notes
             }
         }
 
+        /// <summary>
+        /// Choix du dossier de sauvegarde des PDFs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_ChoixDossier_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -80,21 +93,31 @@ namespace form_Notes
             lbl_Emplacement.Text = c_Path;
         }
 
+        /// <summary>
+        /// Montre l'emplacement de sauvegarde des PDFs lors du hover
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_ChoixDossier_MouseEnter(object sender, EventArgs e)
         {
             lbl_Emplacement.Show();
         }
 
+        /// <summary>
+        /// Cache l'emplacement de sauvegarde des PDFs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_ChoixDossier_MouseLeave(object sender, EventArgs e)
         {
             lbl_Emplacement.Hide();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// Procédure lancée lors de la selection d'un groupe
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbx_ChoixGroupe_SelectedValueChanged(object sender, EventArgs e)
         {
             // Remise à zéro
@@ -111,10 +134,11 @@ namespace form_Notes
 
             // Colonnes
             dtg_Eleves.Columns.Add("col_Id", "Id");
+            // Impossible de modifier l'id d'un élève
+            dtg_Eleves.Columns[0].ReadOnly = true;
             dtg_Eleves.Columns.Add("col_Nom", "Nom");
             dtg_Eleves.Columns.Add("col_Prenom", "Prénom");
             dtg_Eleves.Columns.Add("col_DateNaissance", "Date de naissance");
-
             dtg_Eleves.Columns.Add("col_Adresse", "Adresse");
 
             foreach (cls_Matiere l_Matiere in l_Matieres)
@@ -153,7 +177,6 @@ namespace form_Notes
                 row_Eleve.Cells.Add(cell_DateNaissance);
 
                 // Ajoute la colonne groupe
-                // TODO
 
                 // Adresse
                 DataGridViewCell cell_Adresse = new DataGridViewTextBoxCell();
@@ -190,7 +213,11 @@ namespace form_Notes
             }
         }
 
-        // Génère tous les PDFs
+        /// <summary>
+        /// Clic sur le bouton Générer PDF
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_Generer_Click(object sender, EventArgs e)
         {
             if (dtg_Eleves.SelectedRows.Count == 0)
@@ -228,12 +255,20 @@ namespace form_Notes
                 }
             }
         }
-
+        /// <summary>
+        /// Sélectionne tous les élèves
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_SelectionnerTout_Click(object sender, EventArgs e)
         {
             dtg_Eleves.SelectAll();
         }
-
+        /// <summary>
+        /// Validation d'une cellule lorsqu'elle est modifiée
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dtg_Eleves_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // On n'enregistre pas les modifications sur une nouvelle ligne ou sur l'id
@@ -267,21 +302,41 @@ namespace form_Notes
 
             // TODO : déplacer dans une procédure
 
-            Button new_Log = new Button();
-            new_Log.Text = "Eleve modifié";
-            new_Log.Width = 100;
-            new_Log.FlatAppearance.BorderSize = 0;
-            new_Log.FlatStyle = FlatStyle.Flat;
-            new_Log.Click += delegate(object sender, EventArgs e)
-            {
-                MessageBox.Show("Test");
-            };
-            flp_Log.Controls.Add(new_Log);
+            AjouterLog(TypeLog.ModificationEleve, "Eleve modifié : " + l_EleveModifie.getNom() + " " + l_EleveModifie.getPrenom() + " dans la colonne " + l_ColonneModifie);
         }
 
-        private void New_Log_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Ajoute un bouton de log quand une action est effectuée
+        /// </summary>
+        /// <param name="pTypeLog">Type de log</param>
+        /// <param name="pMessage">Message à afficher lors du clic</param>
+        private void AjouterLog(TypeLog pTypeLog, string pMessage)
         {
+            Button new_Log = new Button();
+
+            switch (pTypeLog)
+            {
+                case TypeLog.ModificationEleve:
+                    new_Log.Text = "Modification élève";
+                    break;
+                case TypeLog.AjoutEleve:
+                    new_Log.Text = "Élève ajouté";
+                    break;
+                case TypeLog.SuppressionEleve:
+                    new_Log.Text = "Élève supprimé";
+                    break;
+            }
             
+            new_Log.Width = 120;
+            new_Log.FlatAppearance.BorderSize = 0;
+            new_Log.FlatStyle = FlatStyle.Flat;
+            new_Log.FlatAppearance.BorderColor = Color.DimGray;
+            new_Log.FlatAppearance.BorderSize = 1;
+            new_Log.Click += delegate
+            {
+                MessageBox.Show(pMessage);
+            };
+            flp_Log.Controls.Add(new_Log);
         }
     }
 }
