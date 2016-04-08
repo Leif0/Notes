@@ -27,26 +27,26 @@ namespace Notes
             c_Groupe = pGroupe;
             pGroupe.ajouterMatiere(this);
             c_Devoirs = new List<cls_Devoir>();
-            setCoefficient(pCoefficient);
-            setProfesseur(pProfesseur);
+            c_Coefficient = pCoefficient;
+            c_Professeur = pProfesseur;
         }
 
-        /// <summary>
-        /// Retourne le libellé de la matière
-        /// </summary>
-        /// <returns>Libellé de la matière</returns>
-        public string getLibelle()
+        public string Libelle
         {
-            return c_Libelle;
+            get { return c_Libelle; }
+            set { c_Libelle = value; }
         }
 
-        /// <summary>
-        /// Modifie le libellé de la matière
-        /// </summary>
-        /// <param name="pLibelle">Libellé de la matière</param>
-        public void setLibelle(string pLibelle)
+        public int Coefficient
         {
-            c_Libelle = pLibelle;
+            get { return c_Coefficient; }
+            set { c_Coefficient = value; }
+        }
+
+        public string Professeur
+        {
+            get { return c_Professeur; }
+            set { c_Professeur = value; }
         }
 
         /// <summary>
@@ -65,42 +65,6 @@ namespace Notes
         public List<cls_Devoir> getDevoirs()
         {
             return c_Devoirs;
-        }
-
-        /// <summary>
-        /// Modifie le coefficient de la matière
-        /// </summary>
-        /// <param name="pCoefficient">Coefficient de la matière</param>
-        public void setCoefficient(int pCoefficient)
-        {
-            c_Coefficient = pCoefficient;
-        }
-
-        /// <summary>
-        /// Retourne le coefficient de la matière
-        /// </summary>
-        /// <returns>Coefficient de la matière</returns>
-        public int getCoefficient()
-        {
-            return c_Coefficient;
-        }
-
-        /// <summary>
-        /// Retourne le professeur qui enseigne la matière
-        /// </summary>
-        /// <returns>Professeur qui enseigne la matière</returns>
-        public string getProfesseur()
-        {
-            return c_Professeur;
-        }
-
-        /// <summary>
-        /// Modifie le professeur qui enseigne la matière
-        /// </summary>
-        /// <param name="pProfesseur">Professeur qui enseigne la matière</param>
-        public void setProfesseur(string pProfesseur)
-        {
-            c_Professeur = pProfesseur;
         }
     }
 }

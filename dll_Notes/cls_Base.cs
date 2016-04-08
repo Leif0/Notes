@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using dll_Notes;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -83,7 +84,7 @@ namespace Notes
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve WHERE id_groupe = " + pGroupe.getId();
+                cmd.CommandText = "SELECT id, nom, prenom, date_naissance, adresse FROM eleve WHERE id_groupe = " + pGroupe.Id;
 
                 Dictionary<int, cls_Eleve> l_Eleves = new Dictionary<int, cls_Eleve>();
 
@@ -109,14 +110,14 @@ namespace Notes
         /// Créer une liste de toutes les matières
         /// </summary>
         /// <returns>Liste de cls_Matiere</returns>
-        public List<cls_Matiere> CreerMatieres(cls_Groupe pGroupe)
+        public Dictionary<int, cls_Matiere> CreerMatieres(cls_Groupe pGroupe)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT matiere.id, matiere.libelle, groupe.id as id_groupe, groupe.libelle as libelle_groupe, matiere.coefficient, matiere.professeur  FROM matiere, groupe WHERE matiere.id_groupe = groupe.id AND id_groupe = " + pGroupe.getId();
+                cmd.CommandText = "SELECT matiere.id, matiere.libelle, groupe.id as id_groupe, groupe.libelle as libelle_groupe, matiere.coefficient, matiere.professeur  FROM matiere, groupe WHERE matiere.id_groupe = groupe.id AND id_groupe = " + pGroupe.Id;
 
-                List<cls_Matiere> l_Matieres = new List<cls_Matiere>();
+                Dictionary<int, cls_Matiere> l_Matieres = new Dictionary<int, cls_Matiere>();
 
                 using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
                 {
@@ -130,19 +131,22 @@ namespace Notes
                         string l_ProfesseurMatiere = l_Reader.GetString(5);
 
                         cls_Matiere l_Matiere = new cls_Matiere(l_Libelle, pGroupe, l_CoefficientMatiere, l_ProfesseurMatiere, l_IdMatiere);
-                        l_Matieres.Add(l_Matiere);
+                        l_Matieres.Add(l_IdMatiere, l_Matiere);
                     }
                 }
                 return l_Matieres;
             }
         }
 
-        public List<cls_Devoir> CreerDevoirs(List<cls_Matiere> pMatieres)
+        public List<cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
         {
+            cls_Modele l_Modele = new cls_Modele();
+            
             List<cls_Devoir> l_Devoirs = new List<cls_Devoir>();
-            for (int i = 0; i < pMatieres.Count; i++)
+
+            foreach (cls_Matiere l_Matiere in pMatieres.Values)
             {
-                List<cls_Devoir> l_DevoirsMatiere = CreerDevoirsMatiere(pMatieres[i]);
+                List<cls_Devoir> l_DevoirsMatiere = CreerDevoirsMatiere(l_Matiere);
 
                 for (int j = 0; j < l_DevoirsMatiere.Count; j++)
                 {
@@ -161,7 +165,7 @@ namespace Notes
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {
                 cmd.Connection = c_Conn;
-                cmd.CommandText = "SELECT devoir.id, devoir.libelle, devoir.date_devoir, matiere.libelle as libelle_matiere FROM devoir, matiere WHERE devoir.id_matiere = matiere.id AND matiere.libelle='"+ pMatiere.getLibelle() + "'";
+                cmd.CommandText = "SELECT devoir.id, devoir.libelle, devoir.date_devoir, matiere.libelle as libelle_matiere FROM devoir, matiere WHERE devoir.id_matiere = matiere.id AND matiere.libelle='"+ pMatiere.Libelle + "'";
 
                 List<cls_Devoir> l_Devoirs = new List<cls_Devoir>();
 
@@ -183,6 +187,13 @@ namespace Notes
             }
         }
         
+        /// <summary>
+        /// Créer la liste des notes pour un devoir
+        /// </summary>
+        /// <param name="pDevoirs"></param>
+        /// <param name="pEleves"></param>
+        /// <param name="pSemestre"></param>
+        /// <returns></returns>
         public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, Dictionary<int, cls_Eleve> pEleves, cls_Semestre pSemestre)
         {
             List<cls_Note> l_Notes = new List<cls_Note>();
@@ -193,7 +204,7 @@ namespace Notes
 
             for (int i = 0; i < pDevoirs.Count; i++)
             {
-                l_IdDevoirsString += pDevoirs[i].getId();
+                l_IdDevoirsString += pDevoirs[i].Id;
                 if (i != pDevoirs.Count-1)
                 {
                     l_IdDevoirsString += ", ";
@@ -217,7 +228,7 @@ namespace Notes
                         cls_Devoir l_Devoir = pDevoirs.Find(
                             delegate(cls_Devoir devoir)
                             {
-                                return devoir.getId() == l_IdDevoir;
+                                return devoir.Id == l_IdDevoir;
                             }
                         );
 
@@ -236,7 +247,7 @@ namespace Notes
         {
             NpgsqlCommand cmd =
                 new NpgsqlCommand("UPDATE eleve SET \"prenom\" = :Prenom, \"nom\" = :Nom, \"date_naissance\" = :DateNaissance WHERE \"id\" = " +
-                                    pEleve.getId() + ";");
+                                    pEleve.Id + ";");
             cmd.Parameters.Add(new NpgsqlParameter("Prenom", NpgsqlDbType.Text));
             cmd.Parameters.Add(new NpgsqlParameter("Nom", NpgsqlDbType.Text));
             cmd.Parameters.Add(new NpgsqlParameter("DateNaissance", NpgsqlDbType.Date));

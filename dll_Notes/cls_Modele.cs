@@ -10,12 +10,14 @@ namespace dll_Notes
     public class cls_Modele
     {
         private Dictionary<int, cls_Groupe> c_ListeGroupes;
-        private Dictionary<int, cls_Eleve> c_ListeEleves; 
+        private Dictionary<int, cls_Eleve> c_ListeEleves;
+        private Dictionary<int, cls_Matiere> c_ListeMatieres;
 
         public cls_Modele()
         {
-            c_ListeGroupes = new Dictionary<int, cls_Groupe>();
-            c_ListeEleves = new Dictionary<int, cls_Eleve>();
+            c_ListeGroupes  = new Dictionary<int, cls_Groupe>();
+            c_ListeEleves   = new Dictionary<int, cls_Eleve>();
+            c_ListeMatieres = new Dictionary<int, cls_Matiere>();
         }
 
         public Dictionary<int, cls_Groupe> ListeGroupes
@@ -30,14 +32,25 @@ namespace dll_Notes
             set { c_ListeEleves = value; }
         }
 
+        public Dictionary<int, cls_Matiere> ListeMatieres
+        {
+            get { return c_ListeMatieres; }
+            set { c_ListeMatieres = value; }
+        }
+
         public cls_Eleve getEleveById(int pIdEleve)
         {
             return c_ListeEleves[pIdEleve];
         }
 
+        public cls_Matiere getMatiereById(int pIdMatiere)
+        {
+            return c_ListeMatieres[pIdMatiere];
+        }
+
         public void ModifierEleve(cls_Eleve pEleve)
         {
-            c_ListeEleves[pEleve.getId()] = pEleve;
+            c_ListeEleves[pEleve.Id] = pEleve;
         }
     }
 }

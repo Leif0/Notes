@@ -60,7 +60,7 @@ namespace Notes
 
             foreach (cls_Matiere l_Matiere in l_Matieres)
             {
-                Console.WriteLine(l_Matiere.getLibelle() + " est une matière coeff " + l_Matiere.getCoefficient() + " et le professeur de la matière est " + l_Matiere.getProfesseur());
+                Console.WriteLine(l_Matiere.Libelle + " est une matière coeff " + l_Matiere.Coefficient + " et le professeur de la matière est " + l_Matiere.Professeur);
             }
 
             // Devoirs
@@ -73,7 +73,7 @@ namespace Notes
 
             foreach (cls_Devoir l_Devoir in l_Devoirs)
             {
-                Console.WriteLine(l_Devoir.getLibelle() + " est un devoir qui a eu lieu le " + l_Devoir.getDateDevoir().Day + "/" + l_Devoir.getDateDevoir().Month + "/" + l_Devoir.getDateDevoir().Year + " dans la matière " + l_Devoir.getMatiere().getLibelle());
+                Console.WriteLine(l_Devoir.getLibelle() + " est un devoir qui a eu lieu le " + l_Devoir.getDateDevoir().Day + "/" + l_Devoir.getDateDevoir().Month + "/" + l_Devoir.getDateDevoir().Year + " dans la matière " + l_Devoir.getMatiere().Libelle);
             }
 
             // Notes
@@ -86,7 +86,7 @@ namespace Notes
 
             foreach (cls_Note l_Note in l_Notes)
             {
-                Console.WriteLine(l_Note.getEleve().getPrenom() + " " + l_Note.getEleve().getNom() + " a eu la note de " + l_Note.getValeur() + " en " + l_Note.getDevoir().getMatiere().getLibelle());
+                Console.WriteLine(l_Note.getEleve().getPrenom() + " " + l_Note.getEleve().getNom() + " a eu la note de " + l_Note.getValeur() + " en " + l_Note.getDevoir().getMatiere().Libelle);
             }
 
             // Génération des fichiers pdfs

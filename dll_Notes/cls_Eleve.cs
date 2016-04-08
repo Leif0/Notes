@@ -191,7 +191,7 @@ namespace Notes
 
             foreach (var l_note in c_Notes)
             {
-                coefficient = l_note.getDevoir().getMatiere().getCoefficient();
+                coefficient = l_note.getDevoir().getMatiere().Coefficient;
 
                 double noteAvecCoeff = l_note.getValeur() * coefficient;
                 total += noteAvecCoeff;
@@ -210,7 +210,7 @@ namespace Notes
             {
                 if (l_note.getSemestre() == pSemestre)
                 {
-                    coefficient = l_note.getDevoir().getMatiere().getCoefficient();
+                    coefficient = l_note.getDevoir().getMatiere().Coefficient;
 
                     double noteAvecCoeff = l_note.getValeur() * coefficient;
                     total += noteAvecCoeff;
@@ -344,6 +344,12 @@ namespace Notes
             }
         }
 
+        /// <summary>
+        /// Retourne l'appréciation pour un semestre
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
+        /// <param name="pSemestre">Semestre</param>
+        /// <returns></returns>
         public cls_Appreciation getAppreciationSemestre(cls_Matiere pMatiere, cls_Semestre pSemestre)
         {
             cls_Appreciation result = c_Appreciations.Find(

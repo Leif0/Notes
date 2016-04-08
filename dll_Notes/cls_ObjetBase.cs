@@ -10,14 +10,15 @@ namespace Notes
     {
         private int c_Id;
 
+        public int Id
+        {
+            get { return c_Id; }
+            //set { c_Id = value; }
+        }
+
         public cls_ObjetBase(int pId)
         {
             c_Id = pId;
-        }
-
-        public int getId()
-        {
-            return c_Id;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace form_Notes
 
         public cls_Modele c_Modele;
         public cls_Base c_Controleur;
+        
         // Un seul semestre en dur
         private cls_Semestre c_Semestre1;
 
@@ -29,7 +30,11 @@ namespace form_Notes
         {
             ModificationEleve,
             AjoutEleve,
-            SuppressionEleve
+            SuppressionEleve,
+            GenerationPDF,
+            ChangementDossier,
+            ChangementGroupe,
+            OuvertureDossier
         }
 
         public Form1()
@@ -67,6 +72,7 @@ namespace form_Notes
                     UseShellExecute = true,
                     Verb = "open"
                 });
+                AjouterLog(TypeLog.OuvertureDossier, "Ouverture du dossier de sauvegarde des PDFs");
             }
             else
             {
@@ -91,6 +97,7 @@ namespace form_Notes
 
             c_Path = fbd.SelectedPath;
             lbl_Emplacement.Text = c_Path;
+            AjouterLog(TypeLog.ChangementDossier, "Changement de l'emplacement de sauvegarde des PDFs");
         }
 
         /// <summary>
@@ -120,6 +127,9 @@ namespace form_Notes
         /// <param name="e"></param>
         private void cbx_ChoixGroupe_SelectedValueChanged(object sender, EventArgs e)
         {
+            AjouterLog(TypeLog.ChangementGroupe, 
+                       "Changement du groupe actif : " + cbx_ChoixGroupe.SelectedValue);
+
             // Remise à zéro
             dtg_Eleves.Rows.Clear();
             dtg_Eleves.Columns.Clear();
@@ -130,53 +140,68 @@ namespace form_Notes
             c_Modele.ListeEleves = c_Controleur.CreerEleves(l_Groupe);
 
             // Les matières
-            List<cls_Matiere> l_Matieres = c_Controleur.CreerMatieres(l_Groupe);
+            // TODO
+            c_Modele.ListeMatieres = c_Controleur.CreerMatieres(l_Groupe);
+           /* List<KeyValuePair<int, cls_Matiere>> l_ListeMatiere = new List<KeyValuePair<int, cls_Matiere>>();
+            l_ListeMatiere.AddRange(c_Modele.ListeMatieres);
+            dgv_Matieres.DataSource = l_ListeMatiere;*/
 
-            // Colonnes
+            // Ajoute les colonnes au tableau
+            AjouterColonnes(c_Modele.ListeMatieres);
+
+            // Ajoute les lignes au tableau
+            AjouterLignesEleves(c_Modele.ListeEleves.Values, c_Modele.ListeMatieres);
+        }
+
+        /// <summary>
+        /// Ajoute les colonnes au tableau
+        /// </summary>
+        /// <param name="pMatiere">Liste des matières</param>
+        private void AjouterColonnes(Dictionary<int, cls_Matiere> pMatiere)
+        {
             dtg_Eleves.Columns.Add("col_Id", "Id");
-            // Impossible de modifier l'id d'un élève
-            dtg_Eleves.Columns[0].ReadOnly = true;
+            dtg_Eleves.Columns[0].ReadOnly = true; // Impossible de modifier l'id d'un élève
             dtg_Eleves.Columns.Add("col_Nom", "Nom");
             dtg_Eleves.Columns.Add("col_Prenom", "Prénom");
             dtg_Eleves.Columns.Add("col_DateNaissance", "Date de naissance");
             dtg_Eleves.Columns.Add("col_Adresse", "Adresse");
 
-            foreach (cls_Matiere l_Matiere in l_Matieres)
+            foreach (cls_Matiere l_Matiere in pMatiere.Values)
             {
-                dtg_Eleves.Columns.Add(l_Matiere.getLibelle(), l_Matiere.getLibelle());
+                dtg_Eleves.Columns.Add(l_Matiere.Libelle, l_Matiere.Libelle);
             }
+        }
 
-            // Lignes
-
-            foreach (cls_Eleve l_Eleve in c_Modele.ListeEleves.Values)
+        /// <summary>
+        /// Ajoute les élèves au tableau
+        /// </summary>
+        /// <param name="pEleves">Les élèves</param>
+        /// <param name="pMatiere">Liste des matières</param>
+        private void AjouterLignesEleves(Dictionary<int, cls_Eleve>.ValueCollection pEleves, Dictionary<int, cls_Matiere> pMatieres)
+        {
+            foreach (cls_Eleve l_Eleve in pEleves)
             {
                 DataGridViewRow row_Eleve = new DataGridViewRow();
 
                 // Id
-
                 DataGridViewCell cell_Id = new DataGridViewTextBoxCell();
-                cell_Id.Value = l_Eleve.getId();
+                cell_Id.Value = l_Eleve.Id;
                 row_Eleve.Cells.Add(cell_Id);
 
                 // Nom
-
                 DataGridViewCell cell_Nom = new DataGridViewTextBoxCell();
                 cell_Nom.Value = l_Eleve.getNom();
                 row_Eleve.Cells.Add(cell_Nom);
 
                 // Prénom
-
                 DataGridViewCell cell_Prenom = new DataGridViewTextBoxCell();
                 cell_Prenom.Value = l_Eleve.getPrenom();
                 row_Eleve.Cells.Add(cell_Prenom);
 
                 // Date de naissance
-
                 DataGridViewCell cell_DateNaissance = new DataGridViewTextBoxCell();
                 cell_DateNaissance.Value = l_Eleve.getDateNaissance();
                 row_Eleve.Cells.Add(cell_DateNaissance);
-
-                // Ajoute la colonne groupe
 
                 // Adresse
                 DataGridViewCell cell_Adresse = new DataGridViewTextBoxCell();
@@ -184,12 +209,12 @@ namespace form_Notes
                 row_Eleve.Cells.Add(cell_Adresse);
 
                 // Créer les devoirs
-                List<cls_Devoir> l_Devoirs = c_Controleur.CreerDevoirs(l_Matieres);
+                List<cls_Devoir> l_Devoirs = c_Controleur.CreerDevoirs(pMatieres);
 
                 // Créer les notes
                 List<cls_Note> l_Notes = c_Controleur.CreerNotes(l_Devoirs, c_Modele.ListeEleves, c_Semestre1);
 
-                foreach (cls_Matiere l_Matiere in l_Matieres)
+                foreach (cls_Matiere l_Matiere in pMatieres.Values)
                 {
                     // La moyenne
                     DataGridViewCell cell_Matiere = new DataGridViewTextBoxCell();
@@ -220,6 +245,7 @@ namespace form_Notes
         /// <param name="e"></param>
         private void btn_Generer_Click(object sender, EventArgs e)
         {
+            // Pas de lignes sélectionnées
             if (dtg_Eleves.SelectedRows.Count == 0)
             {
                 MessageBox.Show(
@@ -230,6 +256,7 @@ namespace form_Notes
                       );
             }
 
+            // Aucun dossier sélectionné
             if (c_Path == null)
             {
                 btn_ChoixDossier.FlatAppearance.BorderColor = Color.Cyan;
@@ -241,6 +268,7 @@ namespace form_Notes
                     MessageBoxIcon.Information
                     );
             }
+            // Sinon on génére les PDFs
             else
             {
                 cls_Groupe l_Groupe = (cls_Groupe)cbx_ChoixGroupe.SelectedItem;
@@ -253,6 +281,8 @@ namespace form_Notes
                         cls_Pdf l_Pdf = new cls_Pdf(c_Modele.ListeEleves[l_IdEleve], c_Semestre1, c_Path);
                     }
                 }
+
+                AjouterLog(TypeLog.GenerationPDF, "Génération PDF");
             }
         }
         /// <summary>
@@ -283,6 +313,7 @@ namespace form_Notes
             // L'élève modifié en lui même
             cls_Eleve l_EleveModifie = c_Modele.getEleveById(l_IdEleveModifie);
 
+            // On modifie les données en fonction de la colonne modifiée
             switch (l_ColonneModifie)
             {
                 case "Nom":
@@ -299,8 +330,6 @@ namespace form_Notes
             }
             c_Modele.ModifierEleve(l_EleveModifie);
             c_Controleur.ModifierEleve(l_EleveModifie);
-
-            // TODO : déplacer dans une procédure
 
             AjouterLog(TypeLog.ModificationEleve, "Eleve modifié : " + l_EleveModifie.getNom() + " " + l_EleveModifie.getPrenom() + " dans la colonne " + l_ColonneModifie);
         }
@@ -325,6 +354,21 @@ namespace form_Notes
                 case TypeLog.SuppressionEleve:
                     new_Log.Text = "Élève supprimé";
                     break;
+                case TypeLog.ChangementDossier:
+                    new_Log.Text = "Changement dossier";
+                    break;
+                case TypeLog.ChangementGroupe:
+                    new_Log.Text = "Changement groupe";
+                    break;
+                case TypeLog.GenerationPDF:
+                    new_Log.Text = "Génération PDF";
+                    break;
+                case TypeLog.OuvertureDossier:
+                    new_Log.Text = "Ouverture dossier";
+                    break;
+                default:
+                    new_Log.Text = "Log";
+                    break;
             }
             
             new_Log.Width = 120;
@@ -337,6 +381,22 @@ namespace form_Notes
                 MessageBox.Show(pMessage);
             };
             flp_Log.Controls.Add(new_Log);
+        }
+
+        //TODO
+        private void dgv_Matieres_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+           /* // On n'enregistre pas les modifications sur une nouvelle ligne ou sur l'id
+            if (dgv_Matieres.Rows[e.RowIndex].IsNewRow || e.ColumnIndex == 0) { return; }
+
+            // La colonne modifiée
+            string l_ColonneModifie = dgv_Matieres.Columns[e.ColumnIndex].HeaderText;
+
+            // Id de la matière modifiée
+            int l_IdMatiereModifie = Convert.ToInt32(dgv_Matieres[0, e.RowIndex].Value);
+
+            // La matière modifiée en elle meme
+            cls_Matiere l_MatiereModifie = c_Modele.getMatiereById(l_IdMatiereModifie);*/
         }
     }
 }

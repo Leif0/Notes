@@ -341,15 +341,15 @@ namespace Notes
                 c_Gfx.DrawRectangle(c_Pen, newLigne);
 
                 // Texte matière
-                c_Gfx.DrawString(matiere.getLibelle(), c_FontNormal, c_Brush,
+                c_Gfx.DrawString(matiere.Libelle, c_FontNormal, c_Brush,
                     new XPoint(30, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 20));
 
                 // Coefficient
-                c_Gfx.DrawString("Coeff. " + matiere.getCoefficient().ToString(), c_FontExtraSmall, c_Brush,
+                c_Gfx.DrawString("Coeff. " + matiere.Coefficient.ToString(), c_FontExtraSmall, c_Brush,
                     new XPoint(130, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 28));
 
                 // Nom professeur
-                c_Gfx.DrawString(matiere.getProfesseur(), c_FontSmallItalic, c_Brush,
+                c_Gfx.DrawString(matiere.Professeur, c_FontSmallItalic, c_Brush,
                     new XPoint(30, c_DebutTableau + c_NumMatiere * c_HauteurLigne + 40));
 
                 // Moyenne eleve pour cette matière pour ce semestre
