@@ -24,13 +24,13 @@ namespace Notes
             Dictionary<int, cls_Eleve> l_Eleves = l_Controleur.CreerEleves(l_Modele.ListeGroupes[0]);
 
             // Créer les matières
-            List<cls_Matiere> l_Matieres = l_Controleur.CreerMatieres(l_Modele.ListeGroupes[0]);
+            //List<cls_Matiere> l_Matieres = l_Controleur.CreerMatieres(l_Modele.ListeGroupes[0]);
 
             // Créer les devoirs
-            List<cls_Devoir> l_Devoirs = l_Controleur.CreerDevoirs(l_Matieres);
+            //List<cls_Devoir> l_Devoirs = l_Controleur.CreerDevoirs(l_Matieres);
             
             // Créer les notes
-            List<cls_Note> l_Notes = l_Controleur.CreerNotes(l_Devoirs, l_Eleves, l_Semestre1);
+            //List<cls_Note> l_Notes = l_Controleur.CreerNotes(l_Devoirs, l_Eleves, l_Semestre1);
 
 
             /********************
@@ -58,10 +58,10 @@ namespace Notes
                                    Utilitaires.alignement.Centrer, 
                                    Utilitaires.espacement.AvantEtApres);
 
-            foreach (cls_Matiere l_Matiere in l_Matieres)
+           /* foreach (cls_Matiere l_Matiere in l_Matieres)
             {
                 Console.WriteLine(l_Matiere.Libelle + " est une matière coeff " + l_Matiere.Coefficient + " et le professeur de la matière est " + l_Matiere.Professeur);
-            }
+            }*/
 
             // Devoirs
 
@@ -71,10 +71,10 @@ namespace Notes
                                    Utilitaires.alignement.Centrer, 
                                    Utilitaires.espacement.AvantEtApres);
 
-            foreach (cls_Devoir l_Devoir in l_Devoirs)
+            /*foreach (cls_Devoir l_Devoir in l_Devoirs)
             {
                 Console.WriteLine(l_Devoir.getLibelle() + " est un devoir qui a eu lieu le " + l_Devoir.getDateDevoir().Day + "/" + l_Devoir.getDateDevoir().Month + "/" + l_Devoir.getDateDevoir().Year + " dans la matière " + l_Devoir.getMatiere().Libelle);
-            }
+            }*/
 
             // Notes
 
@@ -84,10 +84,10 @@ namespace Notes
                                    Utilitaires.alignement.Centrer, 
                                    Utilitaires.espacement.AvantEtApres);
 
-            foreach (cls_Note l_Note in l_Notes)
+            /*foreach (cls_Note l_Note in l_Notes)
             {
                 Console.WriteLine(l_Note.getEleve().getPrenom() + " " + l_Note.getEleve().getNom() + " a eu la note de " + l_Note.getValeur() + " en " + l_Note.getDevoir().getMatiere().Libelle);
-            }
+            }*/
 
             // Génération des fichiers pdfs
 

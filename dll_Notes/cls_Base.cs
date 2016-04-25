@@ -47,6 +47,17 @@ namespace Notes
             c_Conn.Open();
         }
 
+        public void addMatiere(cls_Matiere pMatiere)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = c_Conn;
+                cmd.CommandText = "INSERT INTO matiere (id, libelle, id_groupe, coefficient, professeur) VALUES (" + pMatiere.Id + ",'" + pMatiere.Libelle + "', " + pMatiere.Groupe.Id + "," + pMatiere.Coefficient + ",'" + pMatiere.Professeur +"')";
+                int resultat = cmd.ExecuteNonQuery();
+
+            }
+        }
+
         /// <summary>
         /// Créer une liste de tous les groupes
         /// </summary>
@@ -138,7 +149,7 @@ namespace Notes
             }
         }
 
-        public List<cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
+        /*public List<cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
         {
             cls_Modele l_Modele = new cls_Modele();
             
@@ -154,7 +165,48 @@ namespace Notes
                 }
             }
             return l_Devoirs;
-        } 
+        }*/
+
+        public Dictionary<int, cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+
+                int[] l_IdMatieres = pMatieres.Keys.ToArray();
+                string l_IdMatieresString = "(";
+
+                cls_Matiere dernier = pMatieres.Values.Last();
+                foreach (cls_Matiere l_Matiere in pMatieres.Values)
+                {
+                    l_IdMatieresString += l_Matiere.Id;
+                    if (!l_Matiere.Equals(dernier))
+                    {
+                        l_IdMatieresString += ", ";
+                    }
+                }
+                l_IdMatieresString += " )";
+
+                cmd.Connection = c_Conn;
+                cmd.CommandText = "SELECT id, libelle, date_devoir, id_matiere FROM devoir WHERE id_matiere IN " + l_IdMatieresString;
+
+                Dictionary<int, cls_Devoir> l_Devoirs = new Dictionary<int, cls_Devoir>();
+
+                using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
+                {
+                    while (l_Reader.Read())
+                    {
+                        int l_IdDevoir = l_Reader.GetInt32(0);
+                        string l_Libelle = l_Reader.GetString(1);
+                        DateTime l_DateDevoir = l_Reader.GetDateTime(2);
+                        int l_IdMatiere = l_Reader.GetInt32(3);
+
+                        cls_Devoir l_Devoir = new cls_Devoir(l_Libelle, l_DateDevoir, pMatieres[l_IdMatiere], l_IdDevoir);
+                        l_Devoirs.Add(l_IdDevoir, l_Devoir);
+                    }
+                }
+                return l_Devoirs;
+            }
+        }
 
         /// <summary>
         /// Créer une liste de tous les devoirs pour une matière
@@ -194,18 +246,19 @@ namespace Notes
         /// <param name="pEleves"></param>
         /// <param name="pSemestre"></param>
         /// <returns></returns>
-        public List<cls_Note> CreerNotes(List<cls_Devoir> pDevoirs, Dictionary<int, cls_Eleve> pEleves, cls_Semestre pSemestre)
+        public List<cls_Note> CreerNotes(Dictionary<int, cls_Devoir> pDevoirs, Dictionary<int, cls_Eleve> pEleves, cls_Semestre pSemestre)
         {
             List<cls_Note> l_Notes = new List<cls_Note>();
 
-            int[] l_IdDevoirs = new int[pDevoirs.Count];
+            int[] l_IdDevoirs = pDevoirs.Keys.ToArray();
 
             string l_IdDevoirsString = "(";
 
-            for (int i = 0; i < pDevoirs.Count; i++)
+            cls_Devoir dernier = pDevoirs.Values.Last();
+            foreach (cls_Devoir l_Devoir in pDevoirs.Values)
             {
-                l_IdDevoirsString += pDevoirs[i].Id;
-                if (i != pDevoirs.Count-1)
+                l_IdDevoirsString += l_Devoir.Id;
+                if (!l_Devoir.Equals(dernier))
                 {
                     l_IdDevoirsString += ", ";
                 }
@@ -225,12 +278,7 @@ namespace Notes
                         int l_IdDevoir = l_Reader.GetInt32(0);
                         int l_IdEleve = l_Reader.GetInt32(1);
 
-                        cls_Devoir l_Devoir = pDevoirs.Find(
-                            delegate(cls_Devoir devoir)
-                            {
-                                return devoir.Id == l_IdDevoir;
-                            }
-                        );
+                        cls_Devoir l_Devoir = pDevoirs[l_IdDevoir];
 
                         cls_Eleve l_Eleve = pEleves[l_IdEleve];
 

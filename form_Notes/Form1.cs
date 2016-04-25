@@ -19,7 +19,9 @@ namespace form_Notes
 
         public cls_Modele c_Modele;
         public cls_Base c_Controleur;
-        
+
+        private BindingSource bindingSourceMatieres = new BindingSource();
+
         // Un seul semestre en dur
         private cls_Semestre c_Semestre1;
 
@@ -52,9 +54,12 @@ namespace form_Notes
             foreach (cls_Groupe l_Groupe in c_Modele.ListeGroupes.Values)
             {
                 cbx_ChoixGroupe.Items.Add(l_Groupe);
+                // Créer les eleves
+                c_Modele.ListeEleves = c_Controleur.CreerEleves(l_Groupe);
+                // Créer les matieres
+                c_Modele.ListeMatieres = c_Controleur.CreerMatieres(l_Groupe);
             }
 
-            
         }
 
         /// <summary>
@@ -134,27 +139,43 @@ namespace form_Notes
             dtg_Eleves.Rows.Clear();
             dtg_Eleves.Columns.Clear();
 
+            dgv_Matieres.Rows.Clear();
+            dgv_Matieres.Columns.Clear();
+
+            dgv_Devoirs.Rows.Clear();
+            dgv_Devoirs.Columns.Clear();
+
             cls_Groupe l_Groupe = (cls_Groupe) cbx_ChoixGroupe.SelectedItem;
 
             // Créer les élèves
             c_Modele.ListeEleves = c_Controleur.CreerEleves(l_Groupe);
 
             // Les matières
-            // TODO
             c_Modele.ListeMatieres = c_Controleur.CreerMatieres(l_Groupe);
-           /* List<KeyValuePair<int, cls_Matiere>> l_ListeMatiere = new List<KeyValuePair<int, cls_Matiere>>();
-            l_ListeMatiere.AddRange(c_Modele.ListeMatieres);
-            dgv_Matieres.DataSource = l_ListeMatiere;*/
 
-            // Ajoute les colonnes au tableau
+            // Ajoute les colonnes des élèves
             AjouterColonnes(c_Modele.ListeMatieres);
 
-            // Ajoute les lignes au tableau
+            // Ajoute les lignes des élèves au tableau
             AjouterLignesEleves(c_Modele.ListeEleves.Values, c_Modele.ListeMatieres);
+
+            // Créer la liste des devoirs
+            c_Modele.ListeDevoirs = c_Controleur.CreerDevoirs(c_Modele.ListeMatieres);
+
+            // Ajoute la liste des devoirs
+            AjouterColonnesDevoirs(c_Modele.ListeDevoirs);
+
+            // Ajoute les lignes des devoirs
+            AjouterLignesDevoirs(c_Modele.ListeDevoirs.Values);
+
+            // Ajoute les colonnes des matières
+            AjouterColonnesMatieres(c_Modele.ListeMatieres);
+
+            AjouterLignesMatieres(c_Modele.ListeMatieres);
         }
 
         /// <summary>
-        /// Ajoute les colonnes au tableau
+        /// Ajoute les colonnes au tableau d'élèves
         /// </summary>
         /// <param name="pMatiere">Liste des matières</param>
         private void AjouterColonnes(Dictionary<int, cls_Matiere> pMatiere)
@@ -170,6 +191,90 @@ namespace form_Notes
             {
                 dtg_Eleves.Columns.Add(l_Matiere.Libelle, l_Matiere.Libelle);
             }
+        }
+
+        private void AjouterColonnesDevoirs(Dictionary<int, cls_Devoir> pDevoir)
+        {
+            dgv_Devoirs.Columns.Add("col_Id", "Id");
+            dgv_Devoirs.Columns.Add("col_Libelle", "Libellé");
+            dgv_Devoirs.Columns.Add("col_DateDevoir", "Date");
+            dgv_Devoirs.Columns.Add("col_IdMatiere", "Matière");
+        }
+
+        private void AjouterColonnesMatieres(Dictionary<int, cls_Matiere> pMatieres)
+        {
+            dgv_Matieres.Columns.Add("col_Id", "Id");
+            dgv_Matieres.Columns.Add("col_Libelle", "Libellé");
+            dgv_Matieres.Columns.Add("col_Groupe", "Groupe");
+            dgv_Matieres.Columns.Add("col_Coefficient", "Coefficient");
+            dgv_Matieres.Columns.Add("col_Professeur", "Professeur");
+        }
+
+        private void AjouterLignesMatieres(Dictionary<int, cls_Matiere> pMatieres)
+        {
+            foreach (cls_Matiere l_Matiere in pMatieres.Values)
+            {
+                DataGridViewRow row_Matiere = new DataGridViewRow();
+
+                // Id
+                DataGridViewCell cell_Id = new DataGridViewTextBoxCell();
+                cell_Id.Value = l_Matiere.Id;
+                row_Matiere.Cells.Add(cell_Id);
+
+                // Libellé
+                DataGridViewCell cell_Libelle = new DataGridViewTextBoxCell();
+                cell_Libelle.Value = l_Matiere.Libelle;
+                row_Matiere.Cells.Add(cell_Libelle);
+
+                // Groupe
+                DataGridViewCell cell_Groupe = new DataGridViewTextBoxCell();
+                cell_Groupe.Value = l_Matiere.Groupe;
+                row_Matiere.Cells.Add(cell_Groupe);
+
+                // Coefficient
+                DataGridViewCell cell_Coefficient = new DataGridViewTextBoxCell();
+                cell_Coefficient.Value = l_Matiere.Coefficient;
+                row_Matiere.Cells.Add(cell_Coefficient);
+
+                // Professeur
+                DataGridViewCell cell_Professeur = new DataGridViewTextBoxCell();
+                cell_Professeur.Value = l_Matiere.Professeur;
+                row_Matiere.Cells.Add(cell_Professeur);
+
+                dgv_Matieres.Rows.Add(row_Matiere);
+            }
+        }
+
+        private void AjouterLignesDevoirs(Dictionary<int, cls_Devoir>.ValueCollection pDevoirs)
+        {
+            foreach (cls_Devoir l_Devoir in pDevoirs)
+            {
+                DataGridViewRow row_Devoir = new DataGridViewRow();
+
+                // Id
+                DataGridViewCell cell_Id = new DataGridViewTextBoxCell();
+                cell_Id.Value = l_Devoir.Id;
+                row_Devoir.Cells.Add(cell_Id);
+
+                // Libellé
+                DataGridViewCell cell_Libelle = new DataGridViewTextBoxCell();
+                cell_Libelle.Value = l_Devoir.getLibelle();
+                row_Devoir.Cells.Add(cell_Libelle);
+
+                // Date
+                DataGridViewCell cell_DateDevoir = new DataGridViewTextBoxCell();
+                cell_DateDevoir.Value = l_Devoir.getDateDevoir();
+                row_Devoir.Cells.Add(cell_DateDevoir);
+
+                // Id matiere
+                DataGridViewCell cell_Matiere = new DataGridViewTextBoxCell();
+                cell_Matiere.Value = l_Devoir.getMatiere().ToString();
+                row_Devoir.Cells.Add(cell_Matiere);
+
+                dgv_Devoirs.Rows.Add(row_Devoir);
+            }
+
+            
         }
 
         /// <summary>
@@ -209,7 +314,7 @@ namespace form_Notes
                 row_Eleve.Cells.Add(cell_Adresse);
 
                 // Créer les devoirs
-                List<cls_Devoir> l_Devoirs = c_Controleur.CreerDevoirs(pMatieres);
+                Dictionary<int, cls_Devoir> l_Devoirs = c_Controleur.CreerDevoirs(pMatieres);
 
                 // Créer les notes
                 List<cls_Note> l_Notes = c_Controleur.CreerNotes(l_Devoirs, c_Modele.ListeEleves, c_Semestre1);
@@ -397,6 +502,12 @@ namespace form_Notes
 
             // La matière modifiée en elle meme
             cls_Matiere l_MatiereModifie = c_Modele.getMatiereById(l_IdMatiereModifie);*/
+        }
+
+        private void btn_AjouterMatiere_Click(object sender, EventArgs e)
+        {
+            frm_AjouterMatiere frm_AjouterMatiere = new frm_AjouterMatiere(c_Modele, c_Controleur);
+            frm_AjouterMatiere.ShowDialog();
         }
     }
 }

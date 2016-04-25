@@ -12,12 +12,14 @@ namespace dll_Notes
         private Dictionary<int, cls_Groupe> c_ListeGroupes;
         private Dictionary<int, cls_Eleve> c_ListeEleves;
         private Dictionary<int, cls_Matiere> c_ListeMatieres;
+        private Dictionary<int, cls_Devoir> c_ListeDevoirs; 
 
         public cls_Modele()
         {
             c_ListeGroupes  = new Dictionary<int, cls_Groupe>();
             c_ListeEleves   = new Dictionary<int, cls_Eleve>();
             c_ListeMatieres = new Dictionary<int, cls_Matiere>();
+            c_ListeDevoirs = new Dictionary<int, cls_Devoir>();
         }
 
         public Dictionary<int, cls_Groupe> ListeGroupes
@@ -37,6 +39,12 @@ namespace dll_Notes
             get { return c_ListeMatieres; }
             set { c_ListeMatieres = value; }
         }
+
+        public Dictionary<int, cls_Devoir> ListeDevoirs
+        {
+            get { return c_ListeDevoirs; }
+            set { c_ListeDevoirs = value; }
+        } 
 
         public cls_Eleve getEleveById(int pIdEleve)
         {

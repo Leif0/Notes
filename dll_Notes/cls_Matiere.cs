@@ -49,6 +49,11 @@ namespace Notes
             set { c_Professeur = value; }
         }
 
+        public cls_Groupe Groupe
+        {
+            get { return c_Groupe; }
+        }
+
         /// <summary>
         /// Ajoute un devoir à la matière
         /// </summary>
@@ -65,6 +70,11 @@ namespace Notes
         public List<cls_Devoir> getDevoirs()
         {
             return c_Devoirs;
+        }
+
+        public override string ToString()
+        {
+            return c_Libelle;
         }
     }
 }
