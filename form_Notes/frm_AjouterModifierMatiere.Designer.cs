@@ -1,6 +1,6 @@
 ﻿namespace form_Notes
 {
-    partial class frm_AjouterMatiere
+    partial class frm_AjouterModifierMatiere
     {
         /// <summary>
         /// Required designer variable.
@@ -114,7 +114,7 @@
             this.tbx_Professeur.Size = new System.Drawing.Size(200, 20);
             this.tbx_Professeur.TabIndex = 8;
             // 
-            // frm_AjouterMatiere
+            // frm_AjouterModifierMatiere
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -128,7 +128,7 @@
             this.Controls.Add(this.tbx_Libelle);
             this.Controls.Add(this.lbl_Libelle);
             this.Controls.Add(this.btn_Valider);
-            this.Name = "frm_AjouterMatiere";
+            this.Name = "frm_AjouterModifierMatiere";
             this.Text = "Ajouter une matière";
             this.ResumeLayout(false);
             this.PerformLayout();

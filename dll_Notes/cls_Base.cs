@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +56,33 @@ namespace Notes
                 cmd.CommandText = "INSERT INTO matiere (id, libelle, id_groupe, coefficient, professeur) VALUES (" + pMatiere.Id + ",'" + pMatiere.Libelle + "', " + pMatiere.Groupe.Id + "," + pMatiere.Coefficient + ",'" + pMatiere.Professeur +"')";
                 int resultat = cmd.ExecuteNonQuery();
 
+            }
+        }
+
+        public void updateMatiere(cls_Matiere pMatiere)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = c_Conn;
+                cmd.CommandText = "UPDATE matiere SET libelle='" + pMatiere.Libelle + "', id_groupe=" + 
+                    pMatiere.Groupe.Id + ", coefficient=" + pMatiere.Coefficient + ", professeur='" + 
+                    pMatiere.Professeur + "' WHERE id=" + pMatiere.Id;
+                int resultat = cmd.ExecuteNonQuery();
+
+            }
+        }
+
+        public void addDevoir(cls_Devoir pDevoir)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = c_Conn;
+                string l_DateDevoir = pDevoir.getDateDevoir().ToShortDateString();
+
+                cmd.CommandText = "INSERT INTO devoir (id, libelle, date_devoir, id_matiere) VALUES (" + pDevoir.Id +
+                                  ",'" + pDevoir.getLibelle() + "', '" + l_DateDevoir + "', " +
+                                  pDevoir.getMatiere().Id + ")"; 
+                int resultat = cmd.ExecuteNonQuery();
             }
         }
 

@@ -52,6 +52,7 @@ namespace Notes
         public cls_Groupe Groupe
         {
             get { return c_Groupe; }
+            set { c_Groupe = value; }
         }
 
         /// <summary>

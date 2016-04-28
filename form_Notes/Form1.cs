@@ -17,11 +17,6 @@ namespace form_Notes
     {
         public string c_Path { get; set; }
 
-        public cls_Modele c_Modele;
-        public cls_Base c_Controleur;
-
-        private BindingSource bindingSourceMatieres = new BindingSource();
-
         // Un seul semestre en dur
         private cls_Semestre c_Semestre1;
 
@@ -45,19 +40,17 @@ namespace form_Notes
             lbl_Emplacement.Hide();
 
             c_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
-            c_Modele = new cls_Modele();
-            c_Controleur = new cls_Base("localhost", "postgres", "123456", "notes");
 
             // Créer les groupes
-            c_Modele.ListeGroupes = c_Controleur.CreerGroupes();
+            Program.Modele.ListeGroupes = Program.Controleur.CreerGroupes();
 
-            foreach (cls_Groupe l_Groupe in c_Modele.ListeGroupes.Values)
+            foreach (cls_Groupe l_Groupe in Program.Modele.ListeGroupes.Values)
             {
                 cbx_ChoixGroupe.Items.Add(l_Groupe);
                 // Créer les eleves
-                c_Modele.ListeEleves = c_Controleur.CreerEleves(l_Groupe);
+                Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
                 // Créer les matieres
-                c_Modele.ListeMatieres = c_Controleur.CreerMatieres(l_Groupe);
+                Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
             }
 
         }
@@ -135,43 +128,49 @@ namespace form_Notes
             AjouterLog(TypeLog.ChangementGroupe, 
                        "Changement du groupe actif : " + cbx_ChoixGroupe.SelectedValue);
 
+            RafraichirDonnees(this);
+        }
+
+        public static void RafraichirDonnees(Form1 pForm)
+        {
             // Remise à zéro
-            dtg_Eleves.Rows.Clear();
-            dtg_Eleves.Columns.Clear();
+            pForm.dtg_Eleves.Rows.Clear();
+            pForm.dtg_Eleves.Columns.Clear();
 
-            dgv_Matieres.Rows.Clear();
-            dgv_Matieres.Columns.Clear();
+            pForm.dtg_Matieres.Rows.Clear();
+            pForm.dtg_Matieres.Columns.Clear();
 
-            dgv_Devoirs.Rows.Clear();
-            dgv_Devoirs.Columns.Clear();
+            pForm.dgv_Devoirs.Rows.Clear();
+            pForm.dgv_Devoirs.Columns.Clear();
 
-            cls_Groupe l_Groupe = (cls_Groupe) cbx_ChoixGroupe.SelectedItem;
+            cls_Groupe l_Groupe = (cls_Groupe)pForm.cbx_ChoixGroupe.SelectedItem;
 
             // Créer les élèves
-            c_Modele.ListeEleves = c_Controleur.CreerEleves(l_Groupe);
+            Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
 
             // Les matières
-            c_Modele.ListeMatieres = c_Controleur.CreerMatieres(l_Groupe);
+            Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
 
             // Ajoute les colonnes des élèves
-            AjouterColonnes(c_Modele.ListeMatieres);
+            pForm.AjouterColonnes(Program.Modele.ListeMatieres);
 
             // Ajoute les lignes des élèves au tableau
-            AjouterLignesEleves(c_Modele.ListeEleves.Values, c_Modele.ListeMatieres);
+            pForm.AjouterLignesEleves(Program.Modele.ListeEleves.Values, Program.Modele.ListeMatieres);
 
             // Créer la liste des devoirs
-            c_Modele.ListeDevoirs = c_Controleur.CreerDevoirs(c_Modele.ListeMatieres);
+            Program.Modele.ListeDevoirs = Program.Controleur.CreerDevoirs(Program.Modele.ListeMatieres);
 
             // Ajoute la liste des devoirs
-            AjouterColonnesDevoirs(c_Modele.ListeDevoirs);
+            pForm.AjouterColonnesDevoirs(Program.Modele.ListeDevoirs);
 
             // Ajoute les lignes des devoirs
-            AjouterLignesDevoirs(c_Modele.ListeDevoirs.Values);
+            pForm.AjouterLignesDevoirs(Program.Modele.ListeDevoirs.Values);
 
             // Ajoute les colonnes des matières
-            AjouterColonnesMatieres(c_Modele.ListeMatieres);
+            pForm.AjouterColonnesMatieres(Program.Modele.ListeMatieres);
 
-            AjouterLignesMatieres(c_Modele.ListeMatieres);
+            // Ajoute les lignes des matières
+            pForm.AjouterLignesMatieres(Program.Modele.ListeMatieres);
         }
 
         /// <summary>
@@ -203,11 +202,11 @@ namespace form_Notes
 
         private void AjouterColonnesMatieres(Dictionary<int, cls_Matiere> pMatieres)
         {
-            dgv_Matieres.Columns.Add("col_Id", "Id");
-            dgv_Matieres.Columns.Add("col_Libelle", "Libellé");
-            dgv_Matieres.Columns.Add("col_Groupe", "Groupe");
-            dgv_Matieres.Columns.Add("col_Coefficient", "Coefficient");
-            dgv_Matieres.Columns.Add("col_Professeur", "Professeur");
+            dtg_Matieres.Columns.Add("col_Id", "Id");
+            dtg_Matieres.Columns.Add("col_Libelle", "Libellé");
+            dtg_Matieres.Columns.Add("col_Groupe", "Groupe");
+            dtg_Matieres.Columns.Add("col_Coefficient", "Coefficient");
+            dtg_Matieres.Columns.Add("col_Professeur", "Professeur");
         }
 
         private void AjouterLignesMatieres(Dictionary<int, cls_Matiere> pMatieres)
@@ -241,7 +240,7 @@ namespace form_Notes
                 cell_Professeur.Value = l_Matiere.Professeur;
                 row_Matiere.Cells.Add(cell_Professeur);
 
-                dgv_Matieres.Rows.Add(row_Matiere);
+                dtg_Matieres.Rows.Add(row_Matiere);
             }
         }
 
@@ -314,10 +313,10 @@ namespace form_Notes
                 row_Eleve.Cells.Add(cell_Adresse);
 
                 // Créer les devoirs
-                Dictionary<int, cls_Devoir> l_Devoirs = c_Controleur.CreerDevoirs(pMatieres);
+                Dictionary<int, cls_Devoir> l_Devoirs = Program.Controleur.CreerDevoirs(pMatieres);
 
                 // Créer les notes
-                List<cls_Note> l_Notes = c_Controleur.CreerNotes(l_Devoirs, c_Modele.ListeEleves, c_Semestre1);
+                List<cls_Note> l_Notes = Program.Controleur.CreerNotes(l_Devoirs, Program.Modele.ListeEleves, c_Semestre1);
 
                 foreach (cls_Matiere l_Matiere in pMatieres.Values)
                 {
@@ -383,7 +382,7 @@ namespace form_Notes
                     if (row.IsNewRow != true)
                     {
                         int l_IdEleve = Convert.ToInt32(row.Cells["col_Id"].Value.ToString());
-                        cls_Pdf l_Pdf = new cls_Pdf(c_Modele.ListeEleves[l_IdEleve], c_Semestre1, c_Path);
+                        cls_Pdf l_Pdf = new cls_Pdf(Program.Modele.ListeEleves[l_IdEleve], c_Semestre1, c_Path);
                     }
                 }
 
@@ -416,7 +415,7 @@ namespace form_Notes
             int l_IdEleveModifie = Convert.ToInt32(dtg_Eleves[0, e.RowIndex].Value);
 
             // L'élève modifié en lui même
-            cls_Eleve l_EleveModifie = c_Modele.getEleveById(l_IdEleveModifie);
+            cls_Eleve l_EleveModifie = Program.Modele.getEleveById(l_IdEleveModifie);
 
             // On modifie les données en fonction de la colonne modifiée
             switch (l_ColonneModifie)
@@ -433,8 +432,8 @@ namespace form_Notes
                 default:
                     break;
             }
-            c_Modele.ModifierEleve(l_EleveModifie);
-            c_Controleur.ModifierEleve(l_EleveModifie);
+            Program.Modele.ModifierEleve(l_EleveModifie);
+            Program.Controleur.ModifierEleve(l_EleveModifie);
 
             AjouterLog(TypeLog.ModificationEleve, "Eleve modifié : " + l_EleveModifie.getNom() + " " + l_EleveModifie.getPrenom() + " dans la colonne " + l_ColonneModifie);
         }
@@ -501,13 +500,28 @@ namespace form_Notes
             int l_IdMatiereModifie = Convert.ToInt32(dgv_Matieres[0, e.RowIndex].Value);
 
             // La matière modifiée en elle meme
-            cls_Matiere l_MatiereModifie = c_Modele.getMatiereById(l_IdMatiereModifie);*/
+            cls_Matiere l_MatiereModifie = Program.Modele.getMatiereById(l_IdMatiereModifie);*/
         }
 
         private void btn_AjouterMatiere_Click(object sender, EventArgs e)
         {
-            frm_AjouterMatiere frm_AjouterMatiere = new frm_AjouterMatiere(c_Modele, c_Controleur);
-            frm_AjouterMatiere.ShowDialog();
+            frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere();
+            frm_AjouterModifierMatiere.ShowDialog();
+        }
+
+        private void btn_AjouterDevoir_Click(object sender, EventArgs e)
+        {
+            frm_AjouterDevoir frm_AjouterDevoir = new frm_AjouterDevoir();
+            frm_AjouterDevoir.ShowDialog();
+        }
+
+        private void btn_ModifierMatiere_Click(object sender, EventArgs e)
+        {
+            // Récupère la matière sélectionnée
+            int l_IdMatiere = Convert.ToInt32(dtg_Matieres.CurrentRow.Cells[0].Value.ToString());
+            cls_Matiere l_Matiere = Program.Modele.ListeMatieres[l_IdMatiere];
+            frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere(l_Matiere);
+            frm_AjouterModifierMatiere.ShowDialog();
         }
     }
 }

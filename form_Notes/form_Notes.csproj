@@ -68,19 +68,28 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="frm_AjouterMatiere.cs">
+    <Compile Include="frm_AjouterDevoir.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frm_AjouterMatiere.Designer.cs">
-      <DependentUpon>frm_AjouterMatiere.cs</DependentUpon>
+    <Compile Include="frm_AjouterDevoir.Designer.cs">
+      <DependentUpon>frm_AjouterDevoir.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_AjouterModifierMatiere.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_AjouterModifierMatiere.Designer.cs">
+      <DependentUpon>frm_AjouterModifierMatiere.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frm_AjouterMatiere.resx">
-      <DependentUpon>frm_AjouterMatiere.cs</DependentUpon>
+    <EmbeddedResource Include="frm_AjouterDevoir.resx">
+      <DependentUpon>frm_AjouterDevoir.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_AjouterModifierMatiere.resx">
+      <DependentUpon>frm_AjouterModifierMatiere.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
