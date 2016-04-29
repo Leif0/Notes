@@ -48,12 +48,38 @@ namespace dll_Notes
 
         public cls_Eleve getEleveById(int pIdEleve)
         {
-            return c_ListeEleves[pIdEleve];
+            foreach (cls_Eleve l_Eleve in ListeEleves.Values)
+            {
+                if (l_Eleve.Id == pIdEleve)
+                {
+                    return l_Eleve;
+                }
+            }
+            return null;
         }
 
         public cls_Matiere getMatiereById(int pIdMatiere)
         {
-            return c_ListeMatieres[pIdMatiere];
+            foreach (cls_Matiere l_Matiere in ListeMatieres.Values)
+            {
+                if (l_Matiere.Id == pIdMatiere)
+                {
+                    return l_Matiere;
+                }
+            }
+            return null;
+        }
+
+        public cls_Devoir getDevoirById(int pIdDevoir)
+        {
+            foreach (cls_Devoir l_Devoir in ListeDevoirs.Values)
+            {
+                if (l_Devoir.Id == pIdDevoir)
+                {
+                    return l_Devoir;
+                }
+            }
+            return null;
         }
 
         public void ModifierEleve(cls_Eleve pEleve)

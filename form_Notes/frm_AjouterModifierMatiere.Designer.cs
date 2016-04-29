@@ -41,9 +41,9 @@
             // 
             // btn_Valider
             // 
-            this.btn_Valider.Location = new System.Drawing.Point(12, 127);
+            this.btn_Valider.Location = new System.Drawing.Point(12, 211);
             this.btn_Valider.Name = "btn_Valider";
-            this.btn_Valider.Size = new System.Drawing.Size(260, 122);
+            this.btn_Valider.Size = new System.Drawing.Size(260, 38);
             this.btn_Valider.TabIndex = 0;
             this.btn_Valider.Text = "Valider";
             this.btn_Valider.UseVisualStyleBackColor = true;
@@ -129,7 +129,7 @@
             this.Controls.Add(this.lbl_Libelle);
             this.Controls.Add(this.btn_Valider);
             this.Name = "frm_AjouterModifierMatiere";
-            this.Text = "Ajouter une matière";
+            this.Text = "Ajouter/modifier une matière";
             this.ResumeLayout(false);
             this.PerformLayout();
 

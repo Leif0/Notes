@@ -12,6 +12,9 @@ using NpgsqlTypes;
 
 namespace Notes
 {
+    /// <summary>
+    /// Classe controleur, permet d'accéder aux données dans la base
+    /// </summary>
     public class cls_Base
     {
         private string c_Server;
@@ -48,6 +51,10 @@ namespace Notes
             c_Conn.Open();
         }
 
+        /// <summary>
+        /// Ajoute une nouvelle matière dans la base de donnée
+        /// </summary>
+        /// <param name="pMatiere"></param>
         public void addMatiere(cls_Matiere pMatiere)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
@@ -59,6 +66,10 @@ namespace Notes
             }
         }
 
+        /// <summary>
+        /// Met à jour une matière dans la base de donnée
+        /// </summary>
+        /// <param name="pMatiere">Matière</param>
         public void updateMatiere(cls_Matiere pMatiere)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
@@ -72,6 +83,10 @@ namespace Notes
             }
         }
 
+        /// <summary>
+        /// Ajoute un devoir à la base de données
+        /// </summary>
+        /// <param name="pDevoir">Devoir</param>
         public void addDevoir(cls_Devoir pDevoir)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
@@ -80,9 +95,53 @@ namespace Notes
                 string l_DateDevoir = pDevoir.getDateDevoir().ToShortDateString();
 
                 cmd.CommandText = "INSERT INTO devoir (id, libelle, date_devoir, id_matiere) VALUES (" + pDevoir.Id +
-                                  ",'" + pDevoir.getLibelle() + "', '" + l_DateDevoir + "', " +
+                                  ",'" + pDevoir.Libelle + "', '" + l_DateDevoir + "', " +
                                   pDevoir.getMatiere().Id + ")"; 
                 int resultat = cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Met à jour un devoir dans la base de donnée
+        /// </summary>
+        /// <param name="pDevoir">Un devoir</param>
+        public void updateDevoir(cls_Devoir pDevoir)
+        {
+            string l_UpdateQuery = "UPDATE devoir SET libelle = @libelle, date_devoir = @date_devoir, " +
+                                  "id_matiere = @id_matiere WHERE id = @id_devoir;";
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_UpdateQuery, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("libelle", pDevoir.Libelle);
+                cmd.Parameters.AddWithValue("date_devoir", NpgsqlTypes.NpgsqlDbType.Date, 0, pDevoir.getDateDevoir());
+                cmd.Parameters.AddWithValue("id_matiere", pDevoir.getMatiere().Id);
+                cmd.Parameters.AddWithValue("id_devoir", pDevoir.Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+
+            }
+        }
+
+        /// <summary>
+        /// Met à jour un élève dans la base de donnée
+        /// </summary>
+        /// <param name="pEleve">Un élève</param>
+        public int updateEleve(cls_Eleve pEleve)
+        {
+            string l_UpdateQuery = "UPDATE eleve SET nom = @nom, prenom = @prenom, " +
+                                  "date_naissance = @date_naissance, id_groupe = @id_groupe, " +
+                                   " adresse = @adresse WHERE id = @id_eleve;";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_UpdateQuery, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("nom", pEleve.getNom());
+                cmd.Parameters.AddWithValue("prenom", pEleve.getPrenom());
+                cmd.Parameters.AddWithValue("date_naissance", pEleve.getDateNaissance());
+                cmd.Parameters.AddWithValue("id_groupe", pEleve.getGroupe().Id);
+                cmd.Parameters.AddWithValue("adresse", pEleve.getAdresse());
+                cmd.Parameters.AddWithValue("id_eleve", pEleve.Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
             }
         }
 
@@ -177,24 +236,11 @@ namespace Notes
             }
         }
 
-        /*public List<cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
-        {
-            cls_Modele l_Modele = new cls_Modele();
-            
-            List<cls_Devoir> l_Devoirs = new List<cls_Devoir>();
-
-            foreach (cls_Matiere l_Matiere in pMatieres.Values)
-            {
-                List<cls_Devoir> l_DevoirsMatiere = CreerDevoirsMatiere(l_Matiere);
-
-                for (int j = 0; j < l_DevoirsMatiere.Count; j++)
-                {
-                    l_Devoirs.Add(l_DevoirsMatiere[j]);
-                }
-            }
-            return l_Devoirs;
-        }*/
-
+        /// <summary>
+        /// Créer le dictionnaire de devoirs en mémoire pour toues les matières
+        /// </summary>
+        /// <param name="pMatieres">Dictionnaire de matières</param>
+        /// <returns></returns>
         public Dictionary<int, cls_Devoir> CreerDevoirs(Dictionary<int, cls_Matiere> pMatieres)
         {
             using (NpgsqlCommand cmd = new NpgsqlCommand())
@@ -270,9 +316,9 @@ namespace Notes
         /// <summary>
         /// Créer la liste des notes pour un devoir
         /// </summary>
-        /// <param name="pDevoirs"></param>
-        /// <param name="pEleves"></param>
-        /// <param name="pSemestre"></param>
+        /// <param name="pDevoirs">Dictionnaire de devoirs</param>
+        /// <param name="pEleves">Dictionnaire d'élèves</param>
+        /// <param name="pSemestre">Semestre</param>
         /// <returns></returns>
         public List<cls_Note> CreerNotes(Dictionary<int, cls_Devoir> pDevoirs, Dictionary<int, cls_Eleve> pEleves, cls_Semestre pSemestre)
         {
@@ -311,7 +357,7 @@ namespace Notes
                         cls_Eleve l_Eleve = pEleves[l_IdEleve];
 
                         double l_NoteValeur = l_Reader.GetDouble(2);
-                        cls_Note l_Note = new cls_Note(l_NoteValeur, l_Eleve, l_Devoir, pSemestre);
+                        cls_Note l_Note = new cls_Note(l_NoteValeur, l_Eleve, l_Devoir, pSemestre, l_IdDevoir);
                         l_Notes.Add(l_Note);
                     }
                 }
@@ -319,10 +365,15 @@ namespace Notes
             return l_Notes;
         }
 
+        /// <summary>
+        /// Met à jour un élève en base de données
+        /// </summary>
+        /// <param name="pEleve">Elève à modifier</param>
         public void ModifierEleve(cls_Eleve pEleve)
         {
             NpgsqlCommand cmd =
-                new NpgsqlCommand("UPDATE eleve SET \"prenom\" = :Prenom, \"nom\" = :Nom, \"date_naissance\" = :DateNaissance WHERE \"id\" = " +
+                new NpgsqlCommand("UPDATE eleve SET \"prenom\" = :Prenom, \"nom\" = :Nom, " +
+                                  "\"date_naissance\" = :DateNaissance WHERE \"id\" = " +
                                     pEleve.Id + ";");
             cmd.Parameters.Add(new NpgsqlParameter("Prenom", NpgsqlDbType.Text));
             cmd.Parameters.Add(new NpgsqlParameter("Nom", NpgsqlDbType.Text));
@@ -337,6 +388,9 @@ namespace Notes
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Détruit un objet
+        /// </summary>
         public void DetruitObjet()
          {
              if (c_Conn != null)

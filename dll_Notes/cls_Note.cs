@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
-    public class cls_Note
+    public class cls_Note : cls_ObjetBase
     {
         private double c_Valeur;
         private cls_Eleve c_Eleve;
@@ -20,7 +20,7 @@ namespace Notes
         /// <param name="pEleve">Eleve qui a eu cette note</param>
         /// <param name="pDevoir">Le devoir de la note</param>
 
-        public cls_Note(double pValeur, cls_Eleve pEleve, cls_Devoir pDevoir, cls_Semestre pSemestre)
+        public cls_Note(double pValeur, cls_Eleve pEleve, cls_Devoir pDevoir, cls_Semestre pSemestre, int pId):base(pId)
         {
             setValeur(pValeur);
             setEleve(pEleve);

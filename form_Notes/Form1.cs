@@ -37,8 +37,22 @@ namespace form_Notes
         public Form1()
         {
             InitializeComponent();
-            lbl_Emplacement.Hide();
 
+            // Cache ou affiche des éléments
+
+            lbl_Emplacement.Hide();
+            btn_SelectionnerTout.Show();
+            btn_AjouterMatiere.Hide();
+            btn_ModifierMatiere.Hide();
+            btn_AjouterDevoir.Hide();
+            btn_ModifierDevoir.Hide();
+            btn_ModifierEleve.Show();
+            btn_AjouterEleve.Show();
+
+            // Déplace les boutons au bon endroit
+            PlacerBoutons();
+
+            // Semestre en dur
             c_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
 
             // Créer les groupes
@@ -128,22 +142,27 @@ namespace form_Notes
             AjouterLog(TypeLog.ChangementGroupe, 
                        "Changement du groupe actif : " + cbx_ChoixGroupe.SelectedValue);
 
-            RafraichirDonnees(this);
+            RafraichirDonnees();
         }
 
-        public static void RafraichirDonnees(Form1 pForm)
+        /// <summary>
+        /// Rafraichie toutes les données du formulaire principale (data grid views)
+        /// </summary>
+        public static void RafraichirDonnees()
         {
+            Form1 l_Form = (Form1)Application.OpenForms["Form1"];
+            
             // Remise à zéro
-            pForm.dtg_Eleves.Rows.Clear();
-            pForm.dtg_Eleves.Columns.Clear();
+            l_Form.dgv_Eleves.Rows.Clear();
+            l_Form.dgv_Eleves.Columns.Clear();
 
-            pForm.dtg_Matieres.Rows.Clear();
-            pForm.dtg_Matieres.Columns.Clear();
+            l_Form.dgv_Matieres.Rows.Clear();
+            l_Form.dgv_Matieres.Columns.Clear();
 
-            pForm.dgv_Devoirs.Rows.Clear();
-            pForm.dgv_Devoirs.Columns.Clear();
+            l_Form.dgv_Devoirs.Rows.Clear();
+            l_Form.dgv_Devoirs.Columns.Clear();
 
-            cls_Groupe l_Groupe = (cls_Groupe)pForm.cbx_ChoixGroupe.SelectedItem;
+            cls_Groupe l_Groupe = (cls_Groupe)l_Form.cbx_ChoixGroupe.SelectedItem;
 
             // Créer les élèves
             Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
@@ -152,25 +171,36 @@ namespace form_Notes
             Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
 
             // Ajoute les colonnes des élèves
-            pForm.AjouterColonnes(Program.Modele.ListeMatieres);
+            l_Form.AjouterColonnes(Program.Modele.ListeMatieres);
 
             // Ajoute les lignes des élèves au tableau
-            pForm.AjouterLignesEleves(Program.Modele.ListeEleves.Values, Program.Modele.ListeMatieres);
+            l_Form.AjouterLignesEleves(Program.Modele.ListeEleves.Values, Program.Modele.ListeMatieres);
 
             // Créer la liste des devoirs
             Program.Modele.ListeDevoirs = Program.Controleur.CreerDevoirs(Program.Modele.ListeMatieres);
 
             // Ajoute la liste des devoirs
-            pForm.AjouterColonnesDevoirs(Program.Modele.ListeDevoirs);
+            l_Form.AjouterColonnesDevoirs(Program.Modele.ListeDevoirs);
 
             // Ajoute les lignes des devoirs
-            pForm.AjouterLignesDevoirs(Program.Modele.ListeDevoirs.Values);
+            l_Form.AjouterLignesDevoirs(Program.Modele.ListeDevoirs.Values);
 
             // Ajoute les colonnes des matières
-            pForm.AjouterColonnesMatieres(Program.Modele.ListeMatieres);
+            l_Form.AjouterColonnesMatieres(Program.Modele.ListeMatieres);
 
             // Ajoute les lignes des matières
-            pForm.AjouterLignesMatieres(Program.Modele.ListeMatieres);
+            l_Form.AjouterLignesMatieres(Program.Modele.ListeMatieres);
+
+            // Ajoute les colonnes des notes
+            l_Form.AjouterColonnesNotes();
+
+            // Créer les notes
+            List<cls_Note> l_Notes = Program.Controleur.CreerNotes(Program.Modele.ListeDevoirs, Program.Modele.ListeEleves, l_Form.c_Semestre1);
+
+            // Ajoute les notes au data grid view des notes
+            l_Form.AjouterLignesNotes(l_Notes);
+
+            l_Form.TrierColonnesParId();
         }
 
         /// <summary>
@@ -179,19 +209,23 @@ namespace form_Notes
         /// <param name="pMatiere">Liste des matières</param>
         private void AjouterColonnes(Dictionary<int, cls_Matiere> pMatiere)
         {
-            dtg_Eleves.Columns.Add("col_Id", "Id");
-            dtg_Eleves.Columns[0].ReadOnly = true; // Impossible de modifier l'id d'un élève
-            dtg_Eleves.Columns.Add("col_Nom", "Nom");
-            dtg_Eleves.Columns.Add("col_Prenom", "Prénom");
-            dtg_Eleves.Columns.Add("col_DateNaissance", "Date de naissance");
-            dtg_Eleves.Columns.Add("col_Adresse", "Adresse");
+            dgv_Eleves.Columns.Add("col_Id", "Id");
+            dgv_Eleves.Columns[0].ReadOnly = true; // Impossible de modifier l'id d'un élève
+            dgv_Eleves.Columns.Add("col_Nom", "Nom");
+            dgv_Eleves.Columns.Add("col_Prenom", "Prénom");
+            dgv_Eleves.Columns.Add("col_DateNaissance", "Date de naissance");
+            dgv_Eleves.Columns.Add("col_Adresse", "Adresse");
 
             foreach (cls_Matiere l_Matiere in pMatiere.Values)
             {
-                dtg_Eleves.Columns.Add(l_Matiere.Libelle, l_Matiere.Libelle);
+                dgv_Eleves.Columns.Add(l_Matiere.Libelle, l_Matiere.Libelle);
             }
         }
 
+        /// <summary>
+        /// Ajoute les colonnes des devoirs
+        /// </summary>
+        /// <param name="pDevoir">Dictionnaire de devoirs</param>
         private void AjouterColonnesDevoirs(Dictionary<int, cls_Devoir> pDevoir)
         {
             dgv_Devoirs.Columns.Add("col_Id", "Id");
@@ -200,13 +234,56 @@ namespace form_Notes
             dgv_Devoirs.Columns.Add("col_IdMatiere", "Matière");
         }
 
+        /// <summary>
+        /// Ajoute les colonnes des matières
+        /// </summary>
+        /// <param name="pMatieres">Dictionnaire de matières</param>
         private void AjouterColonnesMatieres(Dictionary<int, cls_Matiere> pMatieres)
         {
-            dtg_Matieres.Columns.Add("col_Id", "Id");
-            dtg_Matieres.Columns.Add("col_Libelle", "Libellé");
-            dtg_Matieres.Columns.Add("col_Groupe", "Groupe");
-            dtg_Matieres.Columns.Add("col_Coefficient", "Coefficient");
-            dtg_Matieres.Columns.Add("col_Professeur", "Professeur");
+            dgv_Matieres.Columns.Add("col_Id", "Id");
+            dgv_Matieres.Columns.Add("col_Libelle", "Libellé");
+            dgv_Matieres.Columns.Add("col_Groupe", "Groupe");
+            dgv_Matieres.Columns.Add("col_Coefficient", "Coefficient");
+            dgv_Matieres.Columns.Add("col_Professeur", "Professeur");
+        }
+
+        /// <summary>
+        /// Ajoute les colonnes des notes
+        /// </summary>
+        private void AjouterColonnesNotes()
+        {
+            dgv_Notes.Columns.Add("col_LibelleDevoir", "Devoir");
+            dgv_Notes.Columns.Add("col_Eleve", "Élève");
+            dgv_Notes.Columns.Add("col_Note", "Note");
+        }
+
+        /// <summary>
+        /// Ajouter les lignes des notes au data grid view
+        /// </summary>
+        /// <param name="pNotes">Liste de notes</param>
+        private void AjouterLignesNotes(List<cls_Note> pNotes)
+        {
+            foreach (cls_Note l_Note in pNotes)
+            {
+                DataGridViewRow row_Note = new DataGridViewRow();
+
+                // Libellé Devoir
+                DataGridViewCell cell_LibelleDevoir = new DataGridViewTextBoxCell();
+                cell_LibelleDevoir.Value = l_Note.getDevoir().Libelle;
+                row_Note.Cells.Add(cell_LibelleDevoir);
+
+                // Élève
+                DataGridViewCell cell_Eleve = new DataGridViewTextBoxCell();
+                cell_Eleve.Value = l_Note.getEleve().ToString();
+                row_Note.Cells.Add(cell_Eleve);
+
+                // Note de l'élève pour ce devoir
+                DataGridViewCell cell_NoteValeur = new DataGridViewTextBoxCell();
+                cell_NoteValeur.Value = l_Note.getValeur();
+                row_Note.Cells.Add(cell_NoteValeur);
+
+                dgv_Notes.Rows.Add(row_Note);
+            }
         }
 
         private void AjouterLignesMatieres(Dictionary<int, cls_Matiere> pMatieres)
@@ -240,7 +317,7 @@ namespace form_Notes
                 cell_Professeur.Value = l_Matiere.Professeur;
                 row_Matiere.Cells.Add(cell_Professeur);
 
-                dtg_Matieres.Rows.Add(row_Matiere);
+                dgv_Matieres.Rows.Add(row_Matiere);
             }
         }
 
@@ -257,7 +334,7 @@ namespace form_Notes
 
                 // Libellé
                 DataGridViewCell cell_Libelle = new DataGridViewTextBoxCell();
-                cell_Libelle.Value = l_Devoir.getLibelle();
+                cell_Libelle.Value = l_Devoir.Libelle;
                 row_Devoir.Cells.Add(cell_Libelle);
 
                 // Date
@@ -304,7 +381,7 @@ namespace form_Notes
 
                 // Date de naissance
                 DataGridViewCell cell_DateNaissance = new DataGridViewTextBoxCell();
-                cell_DateNaissance.Value = l_Eleve.getDateNaissance();
+                cell_DateNaissance.Value = String.Format("{0:d}", l_Eleve.getDateNaissance());
                 row_Eleve.Cells.Add(cell_DateNaissance);
 
                 // Adresse
@@ -314,9 +391,6 @@ namespace form_Notes
 
                 // Créer les devoirs
                 Dictionary<int, cls_Devoir> l_Devoirs = Program.Controleur.CreerDevoirs(pMatieres);
-
-                // Créer les notes
-                List<cls_Note> l_Notes = Program.Controleur.CreerNotes(l_Devoirs, Program.Modele.ListeEleves, c_Semestre1);
 
                 foreach (cls_Matiere l_Matiere in pMatieres.Values)
                 {
@@ -338,7 +412,7 @@ namespace form_Notes
                 }
 
                 // Ajoute la ligne au tableau
-                dtg_Eleves.Rows.Add(row_Eleve);
+                dgv_Eleves.Rows.Add(row_Eleve);
             }
         }
 
@@ -350,7 +424,7 @@ namespace form_Notes
         private void btn_Generer_Click(object sender, EventArgs e)
         {
             // Pas de lignes sélectionnées
-            if (dtg_Eleves.SelectedRows.Count == 0)
+            if (dgv_Eleves.SelectedRows.Count == 0)
             {
                 MessageBox.Show(
                       "Merci de sélectionner des élèves",
@@ -377,7 +451,7 @@ namespace form_Notes
             {
                 cls_Groupe l_Groupe = (cls_Groupe)cbx_ChoixGroupe.SelectedItem;
 
-                foreach (DataGridViewRow row in dtg_Eleves.SelectedRows)
+                foreach (DataGridViewRow row in dgv_Eleves.SelectedRows)
                 {
                     if (row.IsNewRow != true)
                     {
@@ -396,7 +470,7 @@ namespace form_Notes
         /// <param name="e"></param>
         private void btn_SelectionnerTout_Click(object sender, EventArgs e)
         {
-            dtg_Eleves.SelectAll();
+            dgv_Eleves.SelectAll();
         }
         /// <summary>
         /// Validation d'une cellule lorsqu'elle est modifiée
@@ -406,13 +480,13 @@ namespace form_Notes
         private void dtg_Eleves_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // On n'enregistre pas les modifications sur une nouvelle ligne ou sur l'id
-            if (dtg_Eleves.Rows[e.RowIndex].IsNewRow || e.ColumnIndex == 0) {return;}
+            if (dgv_Eleves.Rows[e.RowIndex].IsNewRow || e.ColumnIndex == 0) {return;}
 
             // La colonne modifiée
-            string l_ColonneModifie = dtg_Eleves.Columns[e.ColumnIndex].HeaderText;
+            string l_ColonneModifie = dgv_Eleves.Columns[e.ColumnIndex].HeaderText;
 
             // Id de l'élève modifié
-            int l_IdEleveModifie = Convert.ToInt32(dtg_Eleves[0, e.RowIndex].Value);
+            int l_IdEleveModifie = Convert.ToInt32(dgv_Eleves[0, e.RowIndex].Value);
 
             // L'élève modifié en lui même
             cls_Eleve l_EleveModifie = Program.Modele.getEleveById(l_IdEleveModifie);
@@ -487,22 +561,6 @@ namespace form_Notes
             flp_Log.Controls.Add(new_Log);
         }
 
-        //TODO
-        private void dgv_Matieres_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-        {
-           /* // On n'enregistre pas les modifications sur une nouvelle ligne ou sur l'id
-            if (dgv_Matieres.Rows[e.RowIndex].IsNewRow || e.ColumnIndex == 0) { return; }
-
-            // La colonne modifiée
-            string l_ColonneModifie = dgv_Matieres.Columns[e.ColumnIndex].HeaderText;
-
-            // Id de la matière modifiée
-            int l_IdMatiereModifie = Convert.ToInt32(dgv_Matieres[0, e.RowIndex].Value);
-
-            // La matière modifiée en elle meme
-            cls_Matiere l_MatiereModifie = Program.Modele.getMatiereById(l_IdMatiereModifie);*/
-        }
-
         private void btn_AjouterMatiere_Click(object sender, EventArgs e)
         {
             frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere();
@@ -511,17 +569,204 @@ namespace form_Notes
 
         private void btn_AjouterDevoir_Click(object sender, EventArgs e)
         {
-            frm_AjouterDevoir frm_AjouterDevoir = new frm_AjouterDevoir();
-            frm_AjouterDevoir.ShowDialog();
+            frm_AjouterModifierDevoir frm_AjouterModifierDevoir = new frm_AjouterModifierDevoir();
+            frm_AjouterModifierDevoir.ShowDialog();
         }
 
         private void btn_ModifierMatiere_Click(object sender, EventArgs e)
         {
             // Récupère la matière sélectionnée
-            int l_IdMatiere = Convert.ToInt32(dtg_Matieres.CurrentRow.Cells[0].Value.ToString());
-            cls_Matiere l_Matiere = Program.Modele.ListeMatieres[l_IdMatiere];
-            frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere(l_Matiere);
-            frm_AjouterModifierMatiere.ShowDialog();
+            try
+            {
+                int l_IdMatiere = Convert.ToInt32(dgv_Matieres.CurrentRow.Cells[0].Value.ToString());
+                cls_Matiere l_Matiere = Program.Modele.ListeMatieres[l_IdMatiere];
+                frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere(l_Matiere);
+                frm_AjouterModifierMatiere.ShowDialog();
+            }
+            catch (Exception erreur)
+            {
+                MessageBox.Show("Erreur : " + erreur.Message);
+            }
+
+        }
+
+        private void btn_ModifierDevoir_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Récupère le devoir sélectionné
+                int l_IdDevoir = Convert.ToInt32(dgv_Devoirs.CurrentRow.Cells[0].Value.ToString());
+                cls_Devoir l_Devoir = Program.Modele.getDevoirById(l_IdDevoir);
+                frm_AjouterModifierDevoir frm_AjouterModifierDevoir = new frm_AjouterModifierDevoir(l_Devoir);
+                frm_AjouterModifierDevoir.ShowDialog();
+            }
+            catch (Exception erreur)
+            {
+                MessageBox.Show("Erreur : " + erreur.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Evenement lors d'un changement d'onglet
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tc_ElevesDevoirs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // On cache tous les boutons
+            CacherBoutons();
+
+            // Boutons qui correspond à chaque onglet, ce sont ces boutons qui apparaitront
+
+            // Boutons onglet "Élèves"
+            Button[] l_BoutonsEleves =
+            {
+                btn_SelectionnerTout,
+                btn_AjouterEleve,
+                btn_ModifierEleve
+            };
+
+            // Boutons onglet "Matières"
+            Button[] l_BoutonsMatieres =
+            {
+                btn_AjouterMatiere,
+                btn_ModifierMatiere
+            };
+
+            // Boutons onglet "Devoirs"
+            Button[] l_BoutonsDevoirs =
+            {
+                btn_AjouterDevoir,
+                btn_ModifierDevoir
+            };
+
+            // On regarde quel onglet a été sélectionné et on affiche les boutons
+            if (tc_ElevesDevoirs.SelectedTab == tp_Eleves)
+            {
+                foreach (Button l_Button in l_BoutonsEleves)
+                {
+                    l_Button.Show();
+                }
+            }
+            else
+            {
+                btn_SelectionnerTout.Hide();
+                if (tc_ElevesDevoirs.SelectedTab == tp_Matieres)
+                {
+                    foreach (Button l_Button in l_BoutonsMatieres)
+                    {
+                        l_Button.Show();
+                    }
+                }
+                else
+                {
+                    if (tc_ElevesDevoirs.SelectedTab == tp_Devoirs)
+                    {
+                        foreach (Button l_Button in l_BoutonsDevoirs)
+                        {
+                            l_Button.Show();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void TrierColonnesParId()
+        {
+            dgv_Matieres.Sort(dgv_Matieres.Columns[0], ListSortDirection.Ascending);
+            dgv_Devoirs.Sort(dgv_Devoirs.Columns[0], ListSortDirection.Ascending);
+            dgv_Eleves.Sort(dgv_Eleves.Columns[0], ListSortDirection.Ascending);
+            dgv_Notes.Sort(dgv_Notes.Columns[0], ListSortDirection.Ascending);
+        }
+
+        /// <summary>
+        /// Cache tous les boutons
+        /// </summary>
+        private void CacherBoutons()
+        {
+            btn_SelectionnerTout.Hide();
+            btn_AjouterMatiere.Hide();
+            btn_ModifierMatiere.Hide();
+            btn_AjouterDevoir.Hide();
+            btn_ModifierDevoir.Hide();
+            btn_AjouterEleve.Hide();
+            btn_ModifierEleve.Hide();
+        }
+
+        /// <summary>
+        /// Place les boutons l'un en dessous de l'autre à la bonne place
+        /// </summary>
+        private void PlacerBoutons()
+        {
+            Array[] Boutons =
+            {
+                // Boutons en première position
+                new Button[]
+                {
+                    btn_SelectionnerTout,
+                    btn_AjouterMatiere,
+                    btn_AjouterDevoir
+                },
+                // Boutons en deuxième position
+                new Button[]
+                {
+                    btn_ModifierMatiere,
+                    btn_ModifierDevoir,
+                    btn_AjouterEleve
+                },
+                // Boutons en troisième position
+                new Button[]
+                {
+                    btn_ModifierEleve
+                }
+            };
+
+            // Pour chaque tableau de bouton, on regarde l'index
+            // En index 0, on met une position Y
+            // En index 1, une position un peu plus basse, etc.
+
+            int i = 0;
+            foreach (Button[] l_ArrayBoutons in Boutons)
+            {
+                Point l_Location = new Point();
+                l_Location.X = 719;
+
+                switch (i)
+                {
+                    case 0:
+                        l_Location.Y = 122;
+                        break;
+                    case 1:
+                        l_Location.Y = 174;
+                        break;
+                    case 2:
+                        l_Location.Y = 220;
+                        break;
+                }
+
+                // On assigne la position au bouton
+
+                for (int j = 0; j < l_ArrayBoutons.Length; j++)
+                {
+                    l_ArrayBoutons[j].Location = l_Location;
+                }
+
+                i++;
+            }
+        }
+
+        private void btn_AjouterEleve_Click(object sender, EventArgs e)
+        {
+            frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve();
+            l_frm_AjouterModifierEleve.ShowDialog();
+        }
+
+        private void btn_ModifierEleve_Click(object sender, EventArgs e)
+        {
+            cls_Eleve l_Eleve = Program.Modele.getEleveById(Convert.ToInt32(dgv_Eleves.CurrentRow.Cells[0].Value));
+            frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve(l_Eleve);
+            l_frm_AjouterModifierEleve.ShowDialog();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace form_Notes
 {
-    partial class frm_AjouterDevoir
+    partial class frm_AjouterModifierDevoir
     {
         /// <summary>
         /// Required designer variable.
@@ -96,7 +96,7 @@
             this.cbx_Matiere.Size = new System.Drawing.Size(184, 21);
             this.cbx_Matiere.TabIndex = 7;
             // 
-            // frm_AjouterDevoir
+            // frm_AjouterModifierDevoir
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -108,8 +108,8 @@
             this.Controls.Add(this.tbx_Libelle);
             this.Controls.Add(this.lbl_DateDevoir);
             this.Controls.Add(this.lbl_Libelle);
-            this.Name = "frm_AjouterDevoir";
-            this.Text = "Ajouter un devoir";
+            this.Name = "frm_AjouterModifierDevoir";
+            this.Text = "Ajouter/modifier un devoir";
             this.ResumeLayout(false);
             this.PerformLayout();
 

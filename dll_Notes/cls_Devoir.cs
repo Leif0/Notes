@@ -27,22 +27,10 @@ namespace Notes
             c_Notes = new List<cls_Note>();
         }
 
-        /// <summary>
-        /// Retourne le libellé du devoir
-        /// </summary>
-        /// <returns>Libellé du devoir</returns>
-        public string getLibelle()
+        public string Libelle
         {
-            return c_Libelle;
-        }
-
-        /// <summary>
-        /// Modifie le libellé du devoir
-        /// </summary>
-        /// <param name="pLibelle">Libellé du devoir</param>
-        public void setLibelle(string pLibelle)
-        {
-            c_Libelle = pLibelle;
+            get { return c_Libelle; }
+            set { c_Libelle = value; }
         }
 
         /// <summary>

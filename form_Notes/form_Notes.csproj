@@ -68,11 +68,17 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="frm_AjouterDevoir.cs">
+    <Compile Include="frm_AjouterModifierDevoir.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frm_AjouterDevoir.Designer.cs">
-      <DependentUpon>frm_AjouterDevoir.cs</DependentUpon>
+    <Compile Include="frm_AjouterModifierDevoir.Designer.cs">
+      <DependentUpon>frm_AjouterModifierDevoir.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_AjouterModifierEleve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_AjouterModifierEleve.Designer.cs">
+      <DependentUpon>frm_AjouterModifierEleve.cs</DependentUpon>
     </Compile>
     <Compile Include="frm_AjouterModifierMatiere.cs">
       <SubType>Form</SubType>
@@ -85,8 +91,11 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frm_AjouterDevoir.resx">
-      <DependentUpon>frm_AjouterDevoir.cs</DependentUpon>
+    <EmbeddedResource Include="frm_AjouterModifierDevoir.resx">
+      <DependentUpon>frm_AjouterModifierDevoir.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_AjouterModifierEleve.resx">
+      <DependentUpon>frm_AjouterModifierEleve.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frm_AjouterModifierMatiere.resx">
       <DependentUpon>frm_AjouterModifierMatiere.cs</DependentUpon>
