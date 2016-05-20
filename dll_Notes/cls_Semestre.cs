@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Represente un semestre. Pas implémenté
+    /// </summary>
     public class cls_Semestre
     {
         private int c_Numero;

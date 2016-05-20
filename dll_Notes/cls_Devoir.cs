@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Un devoir pour une matière, contient une liste des notes
+    /// </summary>
     public class cls_Devoir : cls_ObjetBase
     {
         private string c_Libelle;
@@ -25,6 +28,7 @@ namespace Notes
             c_DateDevoir = pDateDevoir;
             c_Matiere = pMatiere;
             c_Notes = new List<cls_Note>();
+            pMatiere.ajouterDevoir(this);
         }
 
         public string Libelle
@@ -67,6 +71,15 @@ namespace Notes
         public void setDateDevoir(DateTime pDateDevoir)
         {
             c_DateDevoir = pDateDevoir;
+        }
+
+        /// <summary>
+        /// Retourne le libellé du devoir
+        /// </summary>
+        /// <returns>Libellé du devoir</returns>
+        public override string ToString()
+        {
+            return c_Libelle;
         }
     }
 }

@@ -7,12 +7,18 @@ using Notes;
 
 namespace dll_Notes
 {
+    /// <summary>
+    /// Modèle contenant les données
+    /// </summary>
     public class cls_Modele
     {
         private Dictionary<int, cls_Groupe> c_ListeGroupes;
         private Dictionary<int, cls_Eleve> c_ListeEleves;
         private Dictionary<int, cls_Matiere> c_ListeMatieres;
-        private Dictionary<int, cls_Devoir> c_ListeDevoirs; 
+        private Dictionary<int, cls_Devoir> c_ListeDevoirs;
+
+        // Un seul semestre en dur
+        private cls_Semestre c_Semestre1;
 
         public cls_Modele()
         {
@@ -20,6 +26,7 @@ namespace dll_Notes
             c_ListeEleves   = new Dictionary<int, cls_Eleve>();
             c_ListeMatieres = new Dictionary<int, cls_Matiere>();
             c_ListeDevoirs = new Dictionary<int, cls_Devoir>();
+            c_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
         }
 
         public Dictionary<int, cls_Groupe> ListeGroupes
@@ -44,7 +51,12 @@ namespace dll_Notes
         {
             get { return c_ListeDevoirs; }
             set { c_ListeDevoirs = value; }
-        } 
+        }
+
+        public cls_Semestre Semestre
+        {
+            get { return c_Semestre1; }
+        }
 
         public cls_Eleve getEleveById(int pIdEleve)
         {

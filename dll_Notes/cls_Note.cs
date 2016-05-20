@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Une note d'un élève à un devoir
+    /// </summary>
     public class cls_Note : cls_ObjetBase
     {
         private double c_Valeur;
@@ -107,5 +110,9 @@ namespace Notes
             return c_Devoir;
         }
 
+        public override string ToString()
+        {
+            return Convert.ToString(c_Valeur);
+        }
     }
 }

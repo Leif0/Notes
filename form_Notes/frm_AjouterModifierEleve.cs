@@ -11,6 +11,9 @@ using Notes;
 
 namespace form_Notes
 {
+    /// <summary>
+    /// Fenêtre d'ajout et de modification de'élève
+    /// </summary>
     public partial class frm_AjouterModifierEleve : Form
     {
         private cls_Eleve c_Eleve;
@@ -43,36 +46,31 @@ namespace form_Notes
         private void btn_Valider_Click(object sender, EventArgs e)
         {
             // Si la saisie est valide (aucun champ vide)
-        
             if (SaisieValide())
             {
-                // Récupération de la saisie
-
-                c_Eleve.setNom(tbx_Nom.Text);
-                c_Eleve.setPrenom(tbx_Prenom.Text);
-                c_Eleve.setDateNaissance(dtp_DateDeNaissance.Value);
-                c_Eleve.setGroupe((cls_Groupe)cbx_Groupe.SelectedItem);
-                c_Eleve.setAdresse(rtb_Adresse.Text);
-
                 // On met à jour dans la base
                 if (c_Eleve != null)
                 {
+                    // Récupération de la saisie
+                    c_Eleve.setNom(tbx_Nom.Text);
+                    c_Eleve.setPrenom(tbx_Prenom.Text);
+                    c_Eleve.setDateNaissance(dtp_DateDeNaissance.Value);
+                    c_Eleve.setGroupe((cls_Groupe)cbx_Groupe.SelectedItem);
+                    c_Eleve.setAdresse(rtb_Adresse.Text);
+
                     int resultat = Program.Controleur.updateEleve(c_Eleve);
-                    if (resultat == 1)
-                    {
-                        MessageBox.Show("Modification effectuée");
-                    }
+
+                    Form1.RafraichirDonnees();
+                    this.Close();
                 }
                 // On créer l'élève
                 else
                 {
-                    //Program.Controleur.addEleve(c_Eleve);
+                    cls_Eleve l_Eleve = new cls_Eleve(tbx_Nom.Text, tbx_Prenom.Text, dtp_DateDeNaissance.Value, (cls_Groupe)cbx_Groupe.SelectedItem, rtb_Adresse.Text, cls_Eleve.NouvelId());
+                    Program.Controleur.addEleve(l_Eleve);
+                    Form1.RafraichirDonnees();
+                    this.Close();
                 }
-                tbx_Nom.Text = c_Eleve.getNom();
-                tbx_Prenom.Text = c_Eleve.getPrenom();
-                dtp_DateDeNaissance.Value = c_Eleve.getDateNaissance();
-                cbx_Groupe.SelectedItem = c_Eleve.getGroupe();
-                rtb_Adresse.Text = c_Eleve.getAdresse();
             }
         }
 

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Objet existant en base de donnée, necessite un ID
+    /// </summary>
     public class cls_ObjetBase
     {
         private int c_Id;

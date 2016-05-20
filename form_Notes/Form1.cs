@@ -13,12 +13,13 @@ using Notes;
 
 namespace form_Notes
 {
+    /// <summary>
+    /// Fenêtre principale du programme
+    /// </summary>
     public partial class Form1 : Form
     {
+        // Chemin de sauvegarde des PDFs
         public string c_Path { get; set; }
-
-        // Un seul semestre en dur
-        private cls_Semestre c_Semestre1;
 
         /// <summary>
         /// Différents types de logs
@@ -38,22 +39,15 @@ namespace form_Notes
         {
             InitializeComponent();
 
-            // Cache ou affiche des éléments
+            // Cache tous les boutons puis affiche uniquement les boutons des élèves
+            CacherBoutons();
 
-            lbl_Emplacement.Hide();
             btn_SelectionnerTout.Show();
-            btn_AjouterMatiere.Hide();
-            btn_ModifierMatiere.Hide();
-            btn_AjouterDevoir.Hide();
-            btn_ModifierDevoir.Hide();
             btn_ModifierEleve.Show();
             btn_AjouterEleve.Show();
 
             // Déplace les boutons au bon endroit
             PlacerBoutons();
-
-            // Semestre en dur
-            c_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
 
             // Créer les groupes
             Program.Modele.ListeGroupes = Program.Controleur.CreerGroupes();
@@ -72,22 +66,26 @@ namespace form_Notes
         /// <summary>
         /// Ouvre l'emplacement de sauvegarde des PDFs
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_OuvrirDossier_Click_1(object sender, EventArgs e)
         {
+            // Si le chemin existe
             if (c_Path != null)
             {
+                // Ouvre l'explorateur
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
                 {
                     FileName = c_Path,
                     UseShellExecute = true,
                     Verb = "open"
                 });
+
+                // Ajoute un log
+
                 AjouterLog(TypeLog.OuvertureDossier, "Ouverture du dossier de sauvegarde des PDFs");
             }
             else
             {
+                // L'utilisateur n'a pas choisis de dossier
                 MessageBox.Show(
                     "Merci de sélectionner un dossier d'enregistrement pour les fichiers PDF.", 
                     "Aucun dossier sélectionné", 
@@ -100,8 +98,6 @@ namespace form_Notes
         /// <summary>
         /// Choix du dossier de sauvegarde des PDFs
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_ChoixDossier_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -115,8 +111,6 @@ namespace form_Notes
         /// <summary>
         /// Montre l'emplacement de sauvegarde des PDFs lors du hover
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_ChoixDossier_MouseEnter(object sender, EventArgs e)
         {
             lbl_Emplacement.Show();
@@ -125,8 +119,6 @@ namespace form_Notes
         /// <summary>
         /// Cache l'emplacement de sauvegarde des PDFs
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_ChoixDossier_MouseLeave(object sender, EventArgs e)
         {
             lbl_Emplacement.Hide();
@@ -135,8 +127,6 @@ namespace form_Notes
         /// <summary>
         /// Procédure lancée lors de la selection d'un groupe
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbx_ChoixGroupe_SelectedValueChanged(object sender, EventArgs e)
         {
             AjouterLog(TypeLog.ChangementGroupe, 
@@ -150,34 +140,47 @@ namespace form_Notes
         /// </summary>
         public static void RafraichirDonnees()
         {
+
+            // Référence vers la fenetre
+
             Form1 l_Form = (Form1)Application.OpenForms["Form1"];
-            
-            // Remise à zéro
-            l_Form.dgv_Eleves.Rows.Clear();
-            l_Form.dgv_Eleves.Columns.Clear();
 
-            l_Form.dgv_Matieres.Rows.Clear();
-            l_Form.dgv_Matieres.Columns.Clear();
+            // Remise à zéro des data grid views
 
-            l_Form.dgv_Devoirs.Rows.Clear();
-            l_Form.dgv_Devoirs.Columns.Clear();
+            DataGridView[] l_DataGridViews =
+            {
+                l_Form.dgv_Eleves,
+                l_Form.dgv_Matieres,
+                l_Form.dgv_Devoirs,
+                l_Form.dgv_Notes
+            };
 
+            foreach (DataGridView l_Control in l_DataGridViews)
+            {
+                l_Control.Rows.Clear();
+                l_Control.Columns.Clear();
+            }
+
+            // Récupère le groupe sélectionné
             cls_Groupe l_Groupe = (cls_Groupe)l_Form.cbx_ChoixGroupe.SelectedItem;
 
             // Créer les élèves
-            Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
+            //Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
 
             // Les matières
-            Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
+            //Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
+
+            // Créer la liste des devoirs
+            Program.Modele.ListeDevoirs = Program.Controleur.CreerDevoirs(Program.Modele.ListeMatieres);
+
+            // Créer les notes
+            List < cls_Note > l_Notes = Program.Controleur.CreerNotes(Program.Modele.ListeDevoirs, Program.Modele.ListeEleves, Program.Modele.Semestre);
 
             // Ajoute les colonnes des élèves
             l_Form.AjouterColonnes(Program.Modele.ListeMatieres);
 
             // Ajoute les lignes des élèves au tableau
             l_Form.AjouterLignesEleves(Program.Modele.ListeEleves.Values, Program.Modele.ListeMatieres);
-
-            // Créer la liste des devoirs
-            Program.Modele.ListeDevoirs = Program.Controleur.CreerDevoirs(Program.Modele.ListeMatieres);
 
             // Ajoute la liste des devoirs
             l_Form.AjouterColonnesDevoirs(Program.Modele.ListeDevoirs);
@@ -194,12 +197,10 @@ namespace form_Notes
             // Ajoute les colonnes des notes
             l_Form.AjouterColonnesNotes();
 
-            // Créer les notes
-            List<cls_Note> l_Notes = Program.Controleur.CreerNotes(Program.Modele.ListeDevoirs, Program.Modele.ListeEleves, l_Form.c_Semestre1);
-
             // Ajoute les notes au data grid view des notes
             l_Form.AjouterLignesNotes(l_Notes);
 
+            // Tri par ID des colonnes
             l_Form.TrierColonnesParId();
         }
 
@@ -269,23 +270,28 @@ namespace form_Notes
 
                 // Libellé Devoir
                 DataGridViewCell cell_LibelleDevoir = new DataGridViewTextBoxCell();
-                cell_LibelleDevoir.Value = l_Note.getDevoir().Libelle;
+                cell_LibelleDevoir.Value = l_Note.getDevoir();
                 row_Note.Cells.Add(cell_LibelleDevoir);
 
                 // Élève
                 DataGridViewCell cell_Eleve = new DataGridViewTextBoxCell();
-                cell_Eleve.Value = l_Note.getEleve().ToString();
+                cell_Eleve.Value = l_Note.getEleve();
                 row_Note.Cells.Add(cell_Eleve);
 
                 // Note de l'élève pour ce devoir
                 DataGridViewCell cell_NoteValeur = new DataGridViewTextBoxCell();
-                cell_NoteValeur.Value = l_Note.getValeur();
+                cell_NoteValeur.Value = l_Note;
                 row_Note.Cells.Add(cell_NoteValeur);
 
+                // Ajout de la ligne au DataGridView
                 dgv_Notes.Rows.Add(row_Note);
             }
         }
 
+        /// <summary>
+        /// Ajoute les lignes des matières au DataGridView
+        /// </summary>
+        /// <param name="pMatieres">Dictionnaire des matières</param>
         private void AjouterLignesMatieres(Dictionary<int, cls_Matiere> pMatieres)
         {
             foreach (cls_Matiere l_Matiere in pMatieres.Values)
@@ -317,10 +323,15 @@ namespace form_Notes
                 cell_Professeur.Value = l_Matiere.Professeur;
                 row_Matiere.Cells.Add(cell_Professeur);
 
+                // Ajoute la ligne au DataGridView
                 dgv_Matieres.Rows.Add(row_Matiere);
             }
         }
 
+        /// <summary>
+        /// Ajoute les lignes des devoirs au datagridview
+        /// </summary>
+        /// <param name="pDevoirs">Dictionnaire de devoirs</param>
         private void AjouterLignesDevoirs(Dictionary<int, cls_Devoir>.ValueCollection pDevoirs)
         {
             foreach (cls_Devoir l_Devoir in pDevoirs)
@@ -347,6 +358,7 @@ namespace form_Notes
                 cell_Matiere.Value = l_Devoir.getMatiere().ToString();
                 row_Devoir.Cells.Add(cell_Matiere);
 
+                // Ajoute la ligne au DataGridView
                 dgv_Devoirs.Rows.Add(row_Devoir);
             }
 
@@ -389,14 +401,11 @@ namespace form_Notes
                 cell_Adresse.Value = l_Eleve.getAdresse();
                 row_Eleve.Cells.Add(cell_Adresse);
 
-                // Créer les devoirs
-                Dictionary<int, cls_Devoir> l_Devoirs = Program.Controleur.CreerDevoirs(pMatieres);
-
                 foreach (cls_Matiere l_Matiere in pMatieres.Values)
                 {
                     // La moyenne
                     DataGridViewCell cell_Matiere = new DataGridViewTextBoxCell();
-                    double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(l_Matiere, c_Semestre1);
+                    double l_MoyenneEleve = l_Eleve.MoyenneMatiereSemestre(l_Matiere, Program.Modele.Semestre);
 
                     // Si il n'y a pas de moyenne, cellule vide
                     if (l_MoyenneEleve != -1)
@@ -419,8 +428,6 @@ namespace form_Notes
         /// <summary>
         /// Clic sur le bouton Générer PDF
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_Generer_Click(object sender, EventArgs e)
         {
             // Pas de lignes sélectionnées
@@ -456,18 +463,17 @@ namespace form_Notes
                     if (row.IsNewRow != true)
                     {
                         int l_IdEleve = Convert.ToInt32(row.Cells["col_Id"].Value.ToString());
-                        cls_Pdf l_Pdf = new cls_Pdf(Program.Modele.ListeEleves[l_IdEleve], c_Semestre1, c_Path);
+                        cls_Pdf l_Pdf = new cls_Pdf(Program.Modele.ListeEleves[l_IdEleve], Program.Modele.Semestre, c_Path);
                     }
                 }
 
                 AjouterLog(TypeLog.GenerationPDF, "Génération PDF");
             }
         }
+
         /// <summary>
         /// Sélectionne tous les élèves
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_SelectionnerTout_Click(object sender, EventArgs e)
         {
             dgv_Eleves.SelectAll();
@@ -475,8 +481,6 @@ namespace form_Notes
         /// <summary>
         /// Validation d'une cellule lorsqu'elle est modifiée
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dtg_Eleves_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // On n'enregistre pas les modifications sur une nouvelle ligne ou sur l'id
@@ -561,16 +565,28 @@ namespace form_Notes
             flp_Log.Controls.Add(new_Log);
         }
 
+        /// <summary>
+        /// Clic sur le bouton d'ajout de matière
+        /// </summary>
         private void btn_AjouterMatiere_Click(object sender, EventArgs e)
         {
-            frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere();
-            frm_AjouterModifierMatiere.ShowDialog();
+            if (UnGroupeEstSelectionne())
+            {
+                frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere();
+                frm_AjouterModifierMatiere.ShowDialog();
+            }
         }
 
+        /// <summary>
+        /// Clic sur le bouton d'ajout de devoir
+        /// </summary>
         private void btn_AjouterDevoir_Click(object sender, EventArgs e)
         {
-            frm_AjouterModifierDevoir frm_AjouterModifierDevoir = new frm_AjouterModifierDevoir();
-            frm_AjouterModifierDevoir.ShowDialog();
+            if (UnGroupeEstSelectionne())
+            {
+                frm_AjouterModifierDevoir frm_AjouterModifierDevoir = new frm_AjouterModifierDevoir();
+                frm_AjouterModifierDevoir.ShowDialog();
+            }
         }
 
         private void btn_ModifierMatiere_Click(object sender, EventArgs e)
@@ -580,6 +596,8 @@ namespace form_Notes
             {
                 int l_IdMatiere = Convert.ToInt32(dgv_Matieres.CurrentRow.Cells[0].Value.ToString());
                 cls_Matiere l_Matiere = Program.Modele.ListeMatieres[l_IdMatiere];
+
+                // Affiche la fenetre
                 frm_AjouterModifierMatiere frm_AjouterModifierMatiere = new frm_AjouterModifierMatiere(l_Matiere);
                 frm_AjouterModifierMatiere.ShowDialog();
             }
@@ -587,9 +605,11 @@ namespace form_Notes
             {
                 MessageBox.Show("Erreur : " + erreur.Message);
             }
-
         }
 
+        /// <summary>
+        /// Clic sur le bouton modifier devoir
+        /// </summary>
         private void btn_ModifierDevoir_Click(object sender, EventArgs e)
         {
             try
@@ -597,6 +617,8 @@ namespace form_Notes
                 // Récupère le devoir sélectionné
                 int l_IdDevoir = Convert.ToInt32(dgv_Devoirs.CurrentRow.Cells[0].Value.ToString());
                 cls_Devoir l_Devoir = Program.Modele.getDevoirById(l_IdDevoir);
+
+                // Affiche la fenetre d'ajout/modification
                 frm_AjouterModifierDevoir frm_AjouterModifierDevoir = new frm_AjouterModifierDevoir(l_Devoir);
                 frm_AjouterModifierDevoir.ShowDialog();
             }
@@ -604,20 +626,18 @@ namespace form_Notes
             {
                 MessageBox.Show("Erreur : " + erreur.Message);
             }
-
         }
 
         /// <summary>
         /// Evenement lors d'un changement d'onglet
+        /// On cache tous les boutons puis on affiche ceux qui correspondent à l'onglet
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void tc_ElevesDevoirs_SelectedIndexChanged(object sender, EventArgs e)
         {
             // On cache tous les boutons
             CacherBoutons();
 
-            // Boutons qui correspond à chaque onglet, ce sont ces boutons qui apparaitront
+            // Boutons qui correspondent à chaque onglet
 
             // Boutons onglet "Élèves"
             Button[] l_BoutonsEleves =
@@ -631,7 +651,8 @@ namespace form_Notes
             Button[] l_BoutonsMatieres =
             {
                 btn_AjouterMatiere,
-                btn_ModifierMatiere
+                btn_ModifierMatiere,
+                btn_SupprimerMatiere
             };
 
             // Boutons onglet "Devoirs"
@@ -641,37 +662,51 @@ namespace form_Notes
                 btn_ModifierDevoir
             };
 
+            // Boutons onglet "Notes"
+            Button[] l_BoutonsNotes =
+            {
+                btn_AjouterNote,
+                btn_ModifierNote,
+                btn_SupprimerNote
+            };
+
             // On regarde quel onglet a été sélectionné et on affiche les boutons
-            if (tc_ElevesDevoirs.SelectedTab == tp_Eleves)
+
+            switch (tc_ElevesDevoirs.SelectedTab.Text)
             {
-                foreach (Button l_Button in l_BoutonsEleves)
-                {
-                    l_Button.Show();
-                }
-            }
-            else
-            {
-                btn_SelectionnerTout.Hide();
-                if (tc_ElevesDevoirs.SelectedTab == tp_Matieres)
-                {
+                case "Élèves":
+                    foreach (Button l_Button in l_BoutonsEleves)
+                    {
+                        l_Button.Show();
+                    }
+                break;
+
+                case "Devoirs":
+                    foreach (Button l_Button in l_BoutonsDevoirs)
+                    {
+                        l_Button.Show();
+                    }
+                    break;
+
+                case "Matières":
                     foreach (Button l_Button in l_BoutonsMatieres)
                     {
                         l_Button.Show();
                     }
-                }
-                else
-                {
-                    if (tc_ElevesDevoirs.SelectedTab == tp_Devoirs)
+                    break;
+
+                case "Notes":
+                    foreach (Button l_Button in l_BoutonsNotes)
                     {
-                        foreach (Button l_Button in l_BoutonsDevoirs)
-                        {
-                            l_Button.Show();
-                        }
+                        l_Button.Show();
                     }
-                }
+                    break;
             }
         }
 
+        /// <summary>
+        /// Tri des colonnes par l'id
+        /// </summary>
         private void TrierColonnesParId()
         {
             dgv_Matieres.Sort(dgv_Matieres.Columns[0], ListSortDirection.Ascending);
@@ -692,6 +727,10 @@ namespace form_Notes
             btn_ModifierDevoir.Hide();
             btn_AjouterEleve.Hide();
             btn_ModifierEleve.Hide();
+            btn_AjouterNote.Hide();
+            btn_ModifierNote.Hide();
+            btn_SupprimerNote.Hide();
+            btn_SupprimerMatiere.Hide();
         }
 
         /// <summary>
@@ -706,19 +745,23 @@ namespace form_Notes
                 {
                     btn_SelectionnerTout,
                     btn_AjouterMatiere,
-                    btn_AjouterDevoir
+                    btn_AjouterDevoir,
+                    btn_AjouterNote
                 },
                 // Boutons en deuxième position
                 new Button[]
                 {
                     btn_ModifierMatiere,
                     btn_ModifierDevoir,
-                    btn_AjouterEleve
+                    btn_AjouterEleve,
+                    btn_ModifierNote
                 },
                 // Boutons en troisième position
                 new Button[]
                 {
-                    btn_ModifierEleve
+                    btn_ModifierEleve,
+                    btn_SupprimerNote,
+                    btn_SupprimerMatiere
                 }
             };
 
@@ -735,13 +778,13 @@ namespace form_Notes
                 switch (i)
                 {
                     case 0:
-                        l_Location.Y = 122;
+                        l_Location.Y = 120;
                         break;
                     case 1:
-                        l_Location.Y = 174;
+                        l_Location.Y = 180;
                         break;
                     case 2:
-                        l_Location.Y = 220;
+                        l_Location.Y = 230;
                         break;
                 }
 
@@ -756,17 +799,143 @@ namespace form_Notes
             }
         }
 
+        /// <summary>
+        /// Clic sur le bouton ajouter élève
+        /// </summary>
         private void btn_AjouterEleve_Click(object sender, EventArgs e)
         {
-            frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve();
-            l_frm_AjouterModifierEleve.ShowDialog();
+            if (UnGroupeEstSelectionne())
+            {
+                frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve();
+                l_frm_AjouterModifierEleve.ShowDialog();
+            }
         }
 
+        /// <summary>
+        /// Clic sur le bouton modifier eleve
+        /// </summary>
         private void btn_ModifierEleve_Click(object sender, EventArgs e)
         {
-            cls_Eleve l_Eleve = Program.Modele.getEleveById(Convert.ToInt32(dgv_Eleves.CurrentRow.Cells[0].Value));
-            frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve(l_Eleve);
-            l_frm_AjouterModifierEleve.ShowDialog();
+            if (dgv_Eleves.Rows.Count > 0)
+            {
+                cls_Eleve l_Eleve = Program.Modele.getEleveById(Convert.ToInt32(dgv_Eleves.CurrentRow.Cells[0].Value));
+                frm_AjouterModifierEleve l_frm_AjouterModifierEleve = new frm_AjouterModifierEleve(l_Eleve);
+                l_frm_AjouterModifierEleve.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Vous devez charger un groupe et sélectionner un élève");
+            }
+
+        }
+
+        /// <summary>
+        /// Clic sur le bouton ajouter noter
+        /// </summary>
+        private void btn_AjouterNote_Click(object sender, EventArgs e)
+        {
+            if (UnGroupeEstSelectionne())
+            {
+                frm_AjouterModifierNote l_frm_AjouterModifierNote = new frm_AjouterModifierNote();
+                l_frm_AjouterModifierNote.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// Clic sur le bouton modifier note
+        /// </summary>
+        private void btn_ModifierNote_Click(object sender, EventArgs e)
+        {
+            if (UnGroupeEstSelectionne())
+            {
+                cls_Note l_Note = (cls_Note) dgv_Notes.CurrentRow.Cells[2].Value;
+
+                frm_AjouterModifierNote l_frm_AjouterModifierNote = new frm_AjouterModifierNote(l_Note);
+                l_frm_AjouterModifierNote.ShowDialog();
+            }
+        }
+
+
+        /// <summary>
+        /// Vérifie qu'un groupe est bien selectionné
+        /// </summary>
+        /// <returns>Boolean</returns>
+        private bool UnGroupeEstSelectionne()
+        {
+            if (cbx_ChoixGroupe.SelectedItem == null)
+            {
+                MessageBox.Show("Vous devez séléctionner un groupe !");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Clic sur le bouton supprimer note
+        /// </summary>
+        private void btn_SupprimerNote_Click(object sender, EventArgs e)
+        {
+            if (UnGroupeEstSelectionne() && dgv_Notes.CurrentRow != null)
+            {
+                cls_Note l_Note = (cls_Note)dgv_Notes.CurrentRow.Cells[2].Value;
+
+                if (l_Note != null)
+                {
+                    int l_Resultat = Program.Controleur.supprimerNote(l_Note);
+
+                    if (l_Resultat == 1)
+                    {
+                        MessageBox.Show("Note supprimée");
+                        Form1.RafraichirDonnees();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Erreur lors de la suppression de la note");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Aucune note selectionnée !");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clic sur le bouton supprimer une matière
+        /// </summary>
+        private void btn_SupprimerMatiere_Click_1(object sender, EventArgs e)
+        {
+            if (UnGroupeEstSelectionne() && dgv_Matieres.CurrentRow != null)
+            {
+                // Récupère la matière selectionnée
+                cls_Matiere l_Matiere = Program.Modele.getMatiereById(Convert.ToInt32(dgv_Matieres.CurrentRow.Cells[0].Value));
+
+                if (l_Matiere != null)
+                {
+                    if (l_Matiere.getDevoirs().Count != 0)
+                    {
+                        MessageBox.Show("Impossible de supprimer une matière contenant des devoirs");
+                    }
+                    else
+                    {
+                        int l_Resultat = Program.Controleur.supprimerMatiere(l_Matiere);
+
+                        if (l_Resultat == 1)
+                        {
+                            MessageBox.Show("Matière supprimée");
+                            Form1.RafraichirDonnees();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Erreur lors de la suppression de la matière");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Aucune matière selectionnée !");
+                }
+            }
         }
     }
 }

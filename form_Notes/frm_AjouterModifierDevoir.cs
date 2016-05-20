@@ -12,6 +12,9 @@ using Notes;
 
 namespace form_Notes
 {
+    /// <summary>
+    /// Fenêtre d'ajout et de modification de devoir
+    /// </summary>
     public partial class frm_AjouterModifierDevoir : Form
     {
         private cls_Devoir c_Devoir;

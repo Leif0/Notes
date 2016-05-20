@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Une matière ayant une liste de devoirs et appartenant à un groupe
+    /// </summary>
     public class cls_Matiere : cls_ObjetBase
     {
         private string c_Libelle;

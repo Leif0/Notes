@@ -76,6 +76,10 @@
             this.dgv_Notes = new System.Windows.Forms.DataGridView();
             this.btn_AjouterEleve = new System.Windows.Forms.Button();
             this.btn_ModifierEleve = new System.Windows.Forms.Button();
+            this.btn_AjouterNote = new System.Windows.Forms.Button();
+            this.btn_ModifierNote = new System.Windows.Forms.Button();
+            this.btn_SupprimerNote = new System.Windows.Forms.Button();
+            this.btn_SupprimerMatiere = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Eleves)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Devoirs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_Matieres)).BeginInit();
@@ -311,7 +315,7 @@
             this.btn_AjouterMatiere.ForeColor = System.Drawing.Color.White;
             this.btn_AjouterMatiere.Image = ((System.Drawing.Image)(resources.GetObject("btn_AjouterMatiere.Image")));
             this.btn_AjouterMatiere.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_AjouterMatiere.Location = new System.Drawing.Point(719, 187);
+            this.btn_AjouterMatiere.Location = new System.Drawing.Point(719, 174);
             this.btn_AjouterMatiere.Name = "btn_AjouterMatiere";
             this.btn_AjouterMatiere.Size = new System.Drawing.Size(130, 39);
             this.btn_AjouterMatiere.TabIndex = 15;
@@ -328,7 +332,7 @@
             this.btn_AjouterDevoir.ForeColor = System.Drawing.Color.White;
             this.btn_AjouterDevoir.Image = ((System.Drawing.Image)(resources.GetObject("btn_AjouterDevoir.Image")));
             this.btn_AjouterDevoir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_AjouterDevoir.Location = new System.Drawing.Point(719, 220);
+            this.btn_AjouterDevoir.Location = new System.Drawing.Point(719, 219);
             this.btn_AjouterDevoir.Name = "btn_AjouterDevoir";
             this.btn_AjouterDevoir.Size = new System.Drawing.Size(130, 39);
             this.btn_AjouterDevoir.TabIndex = 16;
@@ -406,14 +410,14 @@
             // 
             // btn_ModifierMatiere
             // 
-            this.btn_ModifierMatiere.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(87)))), ((int)(((byte)(63)))));
+            this.btn_ModifierMatiere.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(125)))), ((int)(((byte)(9)))));
             this.btn_ModifierMatiere.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btn_ModifierMatiere.FlatAppearance.BorderSize = 0;
             this.btn_ModifierMatiere.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ModifierMatiere.ForeColor = System.Drawing.Color.White;
             this.btn_ModifierMatiere.Image = ((System.Drawing.Image)(resources.GetObject("btn_ModifierMatiere.Image")));
             this.btn_ModifierMatiere.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_ModifierMatiere.Location = new System.Drawing.Point(719, 203);
+            this.btn_ModifierMatiere.Location = new System.Drawing.Point(719, 299);
             this.btn_ModifierMatiere.Name = "btn_ModifierMatiere";
             this.btn_ModifierMatiere.Size = new System.Drawing.Size(130, 39);
             this.btn_ModifierMatiere.TabIndex = 21;
@@ -423,14 +427,14 @@
             // 
             // btn_ModifierDevoir
             // 
-            this.btn_ModifierDevoir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(87)))), ((int)(((byte)(63)))));
+            this.btn_ModifierDevoir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(125)))), ((int)(((byte)(9)))));
             this.btn_ModifierDevoir.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btn_ModifierDevoir.FlatAppearance.BorderSize = 0;
             this.btn_ModifierDevoir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ModifierDevoir.ForeColor = System.Drawing.Color.White;
             this.btn_ModifierDevoir.Image = ((System.Drawing.Image)(resources.GetObject("btn_ModifierDevoir.Image")));
             this.btn_ModifierDevoir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_ModifierDevoir.Location = new System.Drawing.Point(719, 248);
+            this.btn_ModifierDevoir.Location = new System.Drawing.Point(719, 299);
             this.btn_ModifierDevoir.Name = "btn_ModifierDevoir";
             this.btn_ModifierDevoir.Size = new System.Drawing.Size(130, 39);
             this.btn_ModifierDevoir.TabIndex = 22;
@@ -552,7 +556,7 @@
             this.btn_AjouterEleve.ForeColor = System.Drawing.Color.White;
             this.btn_AjouterEleve.Image = ((System.Drawing.Image)(resources.GetObject("btn_AjouterEleve.Image")));
             this.btn_AjouterEleve.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_AjouterEleve.Location = new System.Drawing.Point(719, 293);
+            this.btn_AjouterEleve.Location = new System.Drawing.Point(719, 238);
             this.btn_AjouterEleve.Name = "btn_AjouterEleve";
             this.btn_AjouterEleve.Size = new System.Drawing.Size(130, 39);
             this.btn_AjouterEleve.TabIndex = 24;
@@ -562,14 +566,14 @@
             // 
             // btn_ModifierEleve
             // 
-            this.btn_ModifierEleve.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(87)))), ((int)(((byte)(63)))));
+            this.btn_ModifierEleve.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(125)))), ((int)(((byte)(9)))));
             this.btn_ModifierEleve.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.btn_ModifierEleve.FlatAppearance.BorderSize = 0;
             this.btn_ModifierEleve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ModifierEleve.ForeColor = System.Drawing.Color.White;
             this.btn_ModifierEleve.Image = ((System.Drawing.Image)(resources.GetObject("btn_ModifierEleve.Image")));
             this.btn_ModifierEleve.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btn_ModifierEleve.Location = new System.Drawing.Point(719, 338);
+            this.btn_ModifierEleve.Location = new System.Drawing.Point(719, 299);
             this.btn_ModifierEleve.Name = "btn_ModifierEleve";
             this.btn_ModifierEleve.Size = new System.Drawing.Size(130, 39);
             this.btn_ModifierEleve.TabIndex = 25;
@@ -577,17 +581,89 @@
             this.btn_ModifierEleve.UseVisualStyleBackColor = false;
             this.btn_ModifierEleve.Click += new System.EventHandler(this.btn_ModifierEleve_Click);
             // 
+            // btn_AjouterNote
+            // 
+            this.btn_AjouterNote.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(140)))), ((int)(((byte)(193)))), ((int)(((byte)(82)))));
+            this.btn_AjouterNote.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_AjouterNote.FlatAppearance.BorderSize = 0;
+            this.btn_AjouterNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_AjouterNote.ForeColor = System.Drawing.Color.White;
+            this.btn_AjouterNote.Image = ((System.Drawing.Image)(resources.GetObject("btn_AjouterNote.Image")));
+            this.btn_AjouterNote.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_AjouterNote.Location = new System.Drawing.Point(719, 219);
+            this.btn_AjouterNote.Name = "btn_AjouterNote";
+            this.btn_AjouterNote.Size = new System.Drawing.Size(130, 39);
+            this.btn_AjouterNote.TabIndex = 26;
+            this.btn_AjouterNote.Text = "Ajouter note";
+            this.btn_AjouterNote.UseVisualStyleBackColor = false;
+            this.btn_AjouterNote.Click += new System.EventHandler(this.btn_AjouterNote_Click);
+            // 
+            // btn_ModifierNote
+            // 
+            this.btn_ModifierNote.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(125)))), ((int)(((byte)(9)))));
+            this.btn_ModifierNote.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_ModifierNote.FlatAppearance.BorderSize = 0;
+            this.btn_ModifierNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ModifierNote.ForeColor = System.Drawing.Color.White;
+            this.btn_ModifierNote.Image = ((System.Drawing.Image)(resources.GetObject("btn_ModifierNote.Image")));
+            this.btn_ModifierNote.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_ModifierNote.Location = new System.Drawing.Point(719, 299);
+            this.btn_ModifierNote.Name = "btn_ModifierNote";
+            this.btn_ModifierNote.Size = new System.Drawing.Size(130, 39);
+            this.btn_ModifierNote.TabIndex = 27;
+            this.btn_ModifierNote.Text = "Modifier note";
+            this.btn_ModifierNote.UseVisualStyleBackColor = false;
+            this.btn_ModifierNote.Click += new System.EventHandler(this.btn_ModifierNote_Click);
+            // 
+            // btn_SupprimerNote
+            // 
+            this.btn_SupprimerNote.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(87)))), ((int)(((byte)(63)))));
+            this.btn_SupprimerNote.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_SupprimerNote.FlatAppearance.BorderSize = 0;
+            this.btn_SupprimerNote.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SupprimerNote.ForeColor = System.Drawing.Color.White;
+            this.btn_SupprimerNote.Image = ((System.Drawing.Image)(resources.GetObject("btn_SupprimerNote.Image")));
+            this.btn_SupprimerNote.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_SupprimerNote.Location = new System.Drawing.Point(719, 366);
+            this.btn_SupprimerNote.Name = "btn_SupprimerNote";
+            this.btn_SupprimerNote.Size = new System.Drawing.Size(130, 39);
+            this.btn_SupprimerNote.TabIndex = 28;
+            this.btn_SupprimerNote.Text = "Supprimer note";
+            this.btn_SupprimerNote.UseVisualStyleBackColor = false;
+            this.btn_SupprimerNote.Click += new System.EventHandler(this.btn_SupprimerNote_Click);
+            // 
+            // btn_SupprimerMatiere
+            // 
+            this.btn_SupprimerMatiere.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(233)))), ((int)(((byte)(87)))), ((int)(((byte)(63)))));
+            this.btn_SupprimerMatiere.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btn_SupprimerMatiere.FlatAppearance.BorderSize = 0;
+            this.btn_SupprimerMatiere.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SupprimerMatiere.ForeColor = System.Drawing.Color.White;
+            this.btn_SupprimerMatiere.Image = ((System.Drawing.Image)(resources.GetObject("btn_SupprimerMatiere.Image")));
+            this.btn_SupprimerMatiere.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_SupprimerMatiere.Location = new System.Drawing.Point(719, 238);
+            this.btn_SupprimerMatiere.Name = "btn_SupprimerMatiere";
+            this.btn_SupprimerMatiere.Size = new System.Drawing.Size(130, 39);
+            this.btn_SupprimerMatiere.TabIndex = 29;
+            this.btn_SupprimerMatiere.Text = "Supprimer matière";
+            this.btn_SupprimerMatiere.UseVisualStyleBackColor = false;
+            this.btn_SupprimerMatiere.Click += new System.EventHandler(this.btn_SupprimerMatiere_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(233)))), ((int)(((byte)(237)))));
             this.ClientSize = new System.Drawing.Size(854, 607);
+            this.Controls.Add(this.btn_SupprimerMatiere);
+            this.Controls.Add(this.btn_SupprimerNote);
+            this.Controls.Add(this.btn_ModifierNote);
+            this.Controls.Add(this.btn_AjouterNote);
             this.Controls.Add(this.btn_ModifierEleve);
+            this.Controls.Add(this.btn_ModifierDevoir);
             this.Controls.Add(this.btn_AjouterEleve);
             this.Controls.Add(this.lbl_Emplacement);
             this.Controls.Add(this.tc_ElevesDevoirs);
-            this.Controls.Add(this.btn_ModifierDevoir);
             this.Controls.Add(this.btn_ModifierMatiere);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -649,6 +725,10 @@
         private System.Windows.Forms.DataGridView dgv_Notes;
         private System.Windows.Forms.Button btn_AjouterEleve;
         private System.Windows.Forms.Button btn_ModifierEleve;
+        private System.Windows.Forms.Button btn_AjouterNote;
+        private System.Windows.Forms.Button btn_ModifierNote;
+        private System.Windows.Forms.Button btn_SupprimerNote;
+        private System.Windows.Forms.Button btn_SupprimerMatiere;
     }
 }
 

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Un élève, appartenant à un groupe et ayant des notes
+    /// </summary>
     public class cls_Eleve : cls_ObjetBase
     {
         private string c_Nom;

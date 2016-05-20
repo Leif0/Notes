@@ -122,6 +122,104 @@ namespace Notes
         }
 
         /// <summary>
+        /// Ajoute une note à la base de données
+        /// </summary>
+        /// <param name="pNote">Note</param>
+        public int addNote(cls_Note pNote)
+        {
+            string l_requete = "INSERT INTO noter (id_devoir, id_eleve, note) VALUES (@id_devoir, @id_eleve, @note)";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_requete, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("id_devoir", pNote.getDevoir().Id);
+                cmd.Parameters.AddWithValue("id_eleve", pNote.getEleve().Id);
+                cmd.Parameters.AddWithValue("note", pNote.getValeur());
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
+            }
+        }
+
+        /// <summary>
+        /// Met à jour une note dans la base de donnée
+        /// </summary>
+        /// <param name="pNote">Une note</param>
+        public int updateNote(cls_Devoir pDevoir, cls_Eleve pEleve, double pNote)
+        {
+            string l_UpdateQuery = "UPDATE noter SET note = @note WHERE id_devoir = @id_devoir AND id_eleve = @id_eleve;";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_UpdateQuery, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("note", pNote);
+                cmd.Parameters.AddWithValue("id_devoir", pDevoir.Id);
+                cmd.Parameters.AddWithValue("id_eleve", pEleve.Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
+            }
+        }
+        /// <summary>
+        /// Supprime une note de la base de données
+        /// </summary>
+        /// <param name="pNote">Note à supprimer</param>
+        /// <returns>Nombre de lignes affectées</returns>
+        public int supprimerNote(cls_Note pNote)
+        {
+            string l_Query = "DELETE from noter WHERE id_devoir = @id_devoir AND id_eleve = @id_eleve;";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_Query, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("id_devoir", pNote.getDevoir().Id);
+                cmd.Parameters.AddWithValue("id_eleve", pNote.getEleve().Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
+            }
+        }
+
+        /// <summary>
+        /// Supprime une matière de la base de données
+        /// </summary>
+        /// <param name="pMatiere">Matière à supprimer</param>
+        /// <returns>Nombre de lignes affectées</returns>
+        public int supprimerMatiere(cls_Matiere pMatiere)
+        {
+            string l_Query = "DELETE FROM matiere WHERE id = @id;";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_Query, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("id", pMatiere.Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
+            }
+        }
+
+        /// <summary>
+        /// Ajoute un élève dans la base de donnée
+        /// </summary>
+        /// <param name="pEleve">Élève à ajouter</param>
+        public int addEleve(cls_Eleve pEleve)
+        {
+            string l_UpdateQuery = "INSERT INTO eleve (id, nom, prenom, date_naissance, id_groupe, adresse) " +
+                                   "VALUES (@id, @nom, @prenom, @date_naissance, @id_groupe, @adresse)";
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand(l_UpdateQuery, c_Conn))
+            {
+                cmd.Parameters.AddWithValue("id", pEleve.Id);
+                cmd.Parameters.AddWithValue("nom", pEleve.getNom());
+                cmd.Parameters.AddWithValue("prenom", pEleve.getPrenom());
+                cmd.Parameters.AddWithValue("date_naissance", pEleve.getDateNaissance());
+                cmd.Parameters.AddWithValue("id_groupe", pEleve.getGroupe().Id);
+                cmd.Parameters.AddWithValue("adresse", pEleve.getAdresse());
+                cmd.Parameters.AddWithValue("id_eleve", pEleve.Id);
+
+                int resultat = cmd.ExecuteNonQuery();
+                return resultat;
+            }
+        }
+
+        /// <summary>
         /// Met à jour un élève dans la base de donnée
         /// </summary>
         /// <param name="pEleve">Un élève</param>
@@ -276,6 +374,8 @@ namespace Notes
 
                         cls_Devoir l_Devoir = new cls_Devoir(l_Libelle, l_DateDevoir, pMatieres[l_IdMatiere], l_IdDevoir);
                         l_Devoirs.Add(l_IdDevoir, l_Devoir);
+
+                        //pMatieres[l_IdMatiere].ajouterDevoir(l_Devoir);
                     }
                 }
                 return l_Devoirs;
@@ -324,8 +424,9 @@ namespace Notes
         {
             List<cls_Note> l_Notes = new List<cls_Note>();
 
-            int[] l_IdDevoirs = pDevoirs.Keys.ToArray();
+            // Créer une chaine du type (x, y, z) utilisé dans la requete, pour filtrer par id de devoir
 
+            int[] l_IdDevoirs = pDevoirs.Keys.ToArray();
             string l_IdDevoirsString = "(";
 
             cls_Devoir dernier = pDevoirs.Values.Last();
@@ -339,6 +440,8 @@ namespace Notes
             }
         
             l_IdDevoirsString += ")";
+
+            // On fait la requete
 
             using (NpgsqlCommand cmd = new NpgsqlCommand())
             {

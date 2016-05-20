@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Groupe d'élèves. Chaque groupe a des matières et des élèves associés
+    /// </summary>
     public class cls_Groupe : cls_ObjetBase
     {
         private string c_Libelle;

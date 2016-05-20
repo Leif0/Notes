@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Notes
 {
+    /// <summary>
+    /// Appréciation donnée par un professeur pour un élève
+    /// </summary>
     public class cls_Appreciation
     {
         private string c_Texte;

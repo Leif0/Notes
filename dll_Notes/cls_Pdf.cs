@@ -13,6 +13,9 @@ using PdfSharp.Drawing.Layout;
 
 namespace Notes
 {
+    /// <summary>
+    /// Classe de génération et de sauvegarde des PDF
+    /// </summary>
     public class cls_Pdf
     {
         private PdfDocument c_Bulletin;
