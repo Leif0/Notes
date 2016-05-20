@@ -49,6 +49,9 @@ namespace form_Notes
             // Déplace les boutons au bon endroit
             PlacerBoutons();
 
+            // Créer les enseignants
+            Program.Modele.ListeEnseignants = Program.Controleur.CreerEnseignants();
+
             // Créer les groupes
             Program.Modele.ListeGroupes = Program.Controleur.CreerGroupes();
 
@@ -137,6 +140,7 @@ namespace form_Notes
 
         /// <summary>
         /// Rafraichie toutes les données du formulaire principale (data grid views)
+        /// TODO : régler la duplication des données
         /// </summary>
         public static void RafraichirDonnees()
         {
@@ -165,10 +169,10 @@ namespace form_Notes
             cls_Groupe l_Groupe = (cls_Groupe)l_Form.cbx_ChoixGroupe.SelectedItem;
 
             // Créer les élèves
-            //Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
+            Program.Modele.ListeEleves = Program.Controleur.CreerEleves(l_Groupe);
 
             // Les matières
-            //Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
+            Program.Modele.ListeMatieres = Program.Controleur.CreerMatieres(l_Groupe);
 
             // Créer la liste des devoirs
             Program.Modele.ListeDevoirs = Program.Controleur.CreerDevoirs(Program.Modele.ListeMatieres);
@@ -936,6 +940,15 @@ namespace form_Notes
                     MessageBox.Show("Aucune matière selectionnée !");
                 }
             }
+        }
+
+        /// <summary>
+        /// Clic sur le bouton liste enseignants
+        /// </summary>
+        private void btn_ListeEnseignants_Click(object sender, EventArgs e)
+        {
+            frm_ListeEnseignants l_Frm_ListeEnseignants = new frm_ListeEnseignants();
+            l_Frm_ListeEnseignants.ShowDialog();
         }
     }
 }

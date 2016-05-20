@@ -244,6 +244,39 @@ namespace Notes
         }
 
         /// <summary>
+        /// Créer une liste de tous les enseignants
+        /// </summary>
+        /// <returns>Liste de cls_Groupe</returns>
+        public Dictionary<int, cls_Enseignant> CreerEnseignants()
+        {
+            Dictionary<int, cls_Enseignant> l_Enseignants = new Dictionary<int, cls_Enseignant>();
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand())
+            {
+                cmd.Connection = c_Conn;
+                cmd.CommandText = "SELECT id, nom, prenom, date_entree, numero_telephone, email FROM enseignant";
+
+                using (NpgsqlDataReader l_Reader = cmd.ExecuteReader())
+                {
+                    while (l_Reader.Read())
+                    {
+                        int l_Id = l_Reader.GetInt32(0);
+                        string l_Nom = l_Reader.GetString(1);
+                        string l_Prenom = l_Reader.GetString(2);
+                        DateTime l_DateEntree = l_Reader.GetDateTime(3);
+                        string l_NumeroTelephone = l_Reader.GetString(4);
+                        string l_Email = l_Reader.GetString(5);
+
+                        cls_Enseignant l_Enseignant = new cls_Enseignant(l_Nom, l_Prenom, l_DateEntree, l_NumeroTelephone, l_Email, l_Id);
+
+                        l_Enseignants.Add(l_Id, l_Enseignant);
+                    }
+                }
+            }
+            return l_Enseignants;
+        }
+
+        /// <summary>
         /// Créer une liste de tous les groupes
         /// </summary>
         /// <returns>Liste de cls_Groupe</returns>

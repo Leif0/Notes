@@ -92,6 +92,12 @@
     <Compile Include="frm_AjouterModifierMatiere.Designer.cs">
       <DependentUpon>frm_AjouterModifierMatiere.cs</DependentUpon>
     </Compile>
+    <Compile Include="frm_ListeEnseignants.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_ListeEnseignants.Designer.cs">
+      <DependentUpon>frm_ListeEnseignants.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -108,6 +114,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frm_AjouterModifierMatiere.resx">
       <DependentUpon>frm_AjouterModifierMatiere.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_ListeEnseignants.resx">
+      <DependentUpon>frm_ListeEnseignants.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

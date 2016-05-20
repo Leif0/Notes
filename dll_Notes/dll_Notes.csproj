@@ -61,6 +61,7 @@
     <Compile Include="cls_Base.cs" />
     <Compile Include="cls_Devoir.cs" />
     <Compile Include="cls_Eleve.cs" />
+    <Compile Include="cls_Enseignant.cs" />
     <Compile Include="cls_Groupe.cs" />
     <Compile Include="cls_Matiere.cs" />
     <Compile Include="cls_Modele.cs" />

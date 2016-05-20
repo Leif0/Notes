@@ -16,6 +16,8 @@ namespace dll_Notes
         private Dictionary<int, cls_Eleve> c_ListeEleves;
         private Dictionary<int, cls_Matiere> c_ListeMatieres;
         private Dictionary<int, cls_Devoir> c_ListeDevoirs;
+        private Dictionary<int, cls_Enseignant> c_ListeEnseignants;
+
 
         // Un seul semestre en dur
         private cls_Semestre c_Semestre1;
@@ -26,6 +28,8 @@ namespace dll_Notes
             c_ListeEleves   = new Dictionary<int, cls_Eleve>();
             c_ListeMatieres = new Dictionary<int, cls_Matiere>();
             c_ListeDevoirs = new Dictionary<int, cls_Devoir>();
+            c_ListeEnseignants = new Dictionary<int, cls_Enseignant>();
+
             c_Semestre1 = new cls_Semestre(1, new DateTime(2016, 1, 1), new DateTime(2016, 6, 1));
         }
 
@@ -51,6 +55,12 @@ namespace dll_Notes
         {
             get { return c_ListeDevoirs; }
             set { c_ListeDevoirs = value; }
+        }
+
+        public Dictionary<int, cls_Enseignant> ListeEnseignants
+        {
+            get { return c_ListeEnseignants; }
+            set { c_ListeEnseignants = value; }
         }
 
         public cls_Semestre Semestre
